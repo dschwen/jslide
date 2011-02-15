@@ -1,0 +1,24 @@
+@font-face {
+  font-family: 'Vollkorn';
+  font-style: italic;
+  font-weight: bold;
+  src: local('Vollkorn Bold Italic'), local('Vollkorn-BoldItalic'), url('Vollkorn-BoldItalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Vollkorn';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Vollkorn Regular'), local('Vollkorn-Regular'), url('Vollkorn-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Vollkorn';
+  font-style: italic;
+  font-weight: normal;
+  src: local('Vollkorn Italic'), local('Vollkorn-Italic'), url('Vollkorn-Italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Vollkorn';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Vollkorn Bold'), local('Vollkorn-Bold'), url('Vollkorn-Bold') format('truetype');
+}
