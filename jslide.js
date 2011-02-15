@@ -1,47 +1,87 @@
 var jslide = (function() {
-  function SpotLight(w,h) {
-    var canvas, grad;
+  function buildSpotLight(r) {
+    var canvas, c, grad, im,
+        shown = false,
+        x, y;
 
     // build canvas
     canvas = $('<canvas></canvas>').addClass('jslideSpotlight');
-    $.append(canvas);
-    this.canvas = canvas[0];
-    this.shown = false;
+    $(document).append(canvas);
 
     // initial position
-    this.x = 0;
-    this.y = 0;
+    x = 0;
+    y = 0;
 
     // draw and cache spotlight
-    this.c = this.canvas.getContext('2d');
-    this.recache(w,h);
-  }
-  SpotLight.prototype.recache = function(w,h) {
-    // resize temporarily
-    this.canvas.width = w;
-    this.canvas.width = h;
-    // radial gradient
-    grad = ctx.fillStyle =  ctx.createRadialGradient(w/2,h/2,r*0.75,w/2,h/2,r);
-    grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-    // draw shapes
-    this.c.fillStyle = grad;
-    this.c.fillRect(0,0,w,h);
-    this.im = this.c.getImageData( 0, 0, w, h );
-    this.w = w;
-    this.h = h;
+    c = canvas[0].getContext('2d');
+    recache(r);
 
-    // scale back and redraw
-    this.scale();
-    this.draw();
-  }
-  SpotLight.prototype.draw = function() {
-    this.c.fillStyle = 'rgba(0,0,0,0.5)';
-    this.c.clearRect(0,0,this.w,this.h);
-    this.c.fillRect(0,0,w,h);
-    this.c.putImageData( this.im, this.x, this.y );
+    // methods
+    function recache(newr) {
+      r = newr;
+      // resize temporarily
+      canvas[0].width = 2*r;
+      canvas[0].height = 2*r;
+      // radial gradient
+      grad = c.createRadialGradient(r,r,r*0.75,r,r,r);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.5)');
+      // draw shapes
+      c.fillStyle = grad;
+      c.fillRect(0,0,2*r,2*r);
+      im = c.getImageData( 0, 0, 2*r, 2*r );
 
-  }
+      // scale back and redraw
+      scale();
+      draw();
+    }
+    function scale() {
+      var w = $(window).width(),
+          h = $(window).height();
+      canvas[0].width = w;
+      canvas[0].height = h;
+    }
+    function draw() {
+      c.fillStyle = 'rgba(0,0,0,0.5)';
+      c.clearRect(0,0,canvas[0].width,canvas[0].height);
+      c.fillRect(0,0,canvas[0].width,canvas[0].height);
+      c.putImageData( im, x, y );
+    }
+    function mouseMoveHandler(e) {
+      var coord = e.pageX + ' ' + e.pageY;
+      x = e.pageX - r;
+      y = e.pageY - r;
+      draw();
+    }
+    function mouseWheelHandler(e, delta) {
+      recache( r + 10 * delta );
+    }
+    function show() {
+      $(document).bind( 'mousemove', mouseMoveHandler );
+      $(document).mousewheel( mouseWheelHandler );
+      $(window).bind( 'resize', scale );
+      $(canvas).fadeIn();
+      shown = true;
+    }
+    function hide() {
+      $(document).unbind( 'mousemove', mouseMoveHandler );
+      $(document).unmousewheel( mouseWheelHandler );
+      $(window).unbind( 'resize', scale );
+      $(canvas).fadeOut();
+      shown = false;
+    }
+    function toggle() {
+      if( shown ) {
+        hide();
+      } else {
+        show();
+      }
+    }
+
+    return {
+      toggle : toggle
+    };
+  };
 
   function scale() {
     var cs = $(slideList[current]),
@@ -59,15 +99,6 @@ var jslide = (function() {
     // center
     cs.css('left',sx+'px');
     cs.css('top',sy+'px');
-
-    // debug
-    //$('#deb').text('window='+ww+'x'+wh+' element='+ew+'x'+eh)
-  
-    // spotlight
-    var canvas = $('#spotoverlay')[0];
-    canvas.width = ww;
-    canvas.height = wh;
-    spotlightRedraw();
   }
 
   // go to slide
@@ -97,51 +128,16 @@ var jslide = (function() {
     }
   }
 
-  // build spotlight
-  var ctx, im, spotW, spotH;
-  function spotlightInit() {
-    var canvas = $('#spotoverlay')[0],
-        w = canvas.width,
-        h = canvas.height,
-        r = Math.min(w/2,h/2),
-        grad;
-    ctx = canvas.getContext('2d');
-
-    // radila gradient
-    grad = ctx.fillStyle =  ctx.createRadialGradient(w/2,h/2,r*0.75,w/2,h/2,r);
-    grad.addColorStop(0, 'rgba(0,0,0,0)');
-    grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-
-    // draw shapes
-    ctx.fillStyle = grad;
-    ctx.fillRect(0,0,w,h);
-
-    im = ctx.getImageData( 0, 0, w, h );
-    spotW = w/2;
-    spotH = h/2;
-  }
-
-  var spotX = 0, spotY = 0;
-  function spotlightRedraw() {
-    var canvas = $('#spotoverlay')[0],
-        w = canvas.width,
-        h = canvas.height;
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.clearRect(0,0,w,h);
-    ctx.fillRect(0,0,w,h);
-    ctx.putImageData( im, spotX, spotY );
-  }
-
   // initialization
-  var slideList;
+  var slideList, spotLight;
   function init() {
     var i, h;
     // build list of slides, hide all slides, show slide 0
     slideList = $('div.slide');
     slideList.each( function(i,e) { $(e).css('left','-9999px'); })
 
-    // spotlight
-    spotlightInit();
+    // Spotlight
+    spotLight = buildSpotLight(100);
 
     // honor url hash
     h = window.location.hash.substr(1);
@@ -178,30 +174,18 @@ var jslide = (function() {
         case 37: // crsr left 
         case 38: // crsr up 
           prevSlide(); break;
-        case 35: // home 
+        case 35: // end
           goToSlide(slideList.length-1); break;
-        case 36: // home 
+        case 36: // home
           goToSlide(0); break;
         case 83 : // s
-          $('#spotoverlay').fadeOut(); break;
-        case 84 : // t
-          $('#spotoverlay').fadeIn(); break;
+          spotLight.toggle(); break;
       }
-    } );
-    $(document).mousemove( function(e) {
-      var coord = e.pageX + ' ' + e.pageY;
-      //$('#spotlight').css('background','-webkit-gradient( radial, '+coord+', 50, '+coord+', 80, from(rgba(0,0,0,0)), to(rgba(0,0,0,0.5)) )' );
-      //$('#spotlight').css('left', e.pageX+'px' );
-      //$('#spotlight').css('top', e.pageY+'px' );
-      spotX = e.pageX-spotW;
-      spotY = e.pageY-spotH;
-      spotlightRedraw();
     } );
   }
 
   return {
     init : init,
-    spot : spotlightInit,
     nextSlide : nextSlide,
     prevSlide : prevSlide,
     freeze    : function() { frozen = true; },
