@@ -16,6 +16,9 @@ var jslide = (function() {
     c = canvas[0].getContext('2d');
     recache(r);
 
+    // bind the 'dry' mousemove handler (only update coordinates, no redrawing)
+    $(document).bind( 'mousemove', mouseMoveHandlerDry );
+
     // methods
     function recache(newr) {
       r = newr;
@@ -53,6 +56,11 @@ var jslide = (function() {
       y = e.pageY - r;
       draw();
     }
+    function mouseMoveHandlerDry(e) {
+      var coord = e.pageX + ' ' + e.pageY;
+      x = e.pageX - r;
+      y = e.pageY - r;
+    }
     function mouseWheelHandler(e, delta) {
       var newr = Math.floor( r + (10+r/10)*delta );
       if( newr < 30 || newr > 1000 ) { return; }
@@ -61,6 +69,7 @@ var jslide = (function() {
       recache( newr );
     }
     function show() {
+      $(document).unbind( 'mousemove', mouseMoveHandlerDry );
       $(document).bind( 'mousemove', mouseMoveHandler );
       $(document).mousewheel( mouseWheelHandler );
       $(window).bind( 'resize', scale );
@@ -71,6 +80,7 @@ var jslide = (function() {
     }
     function hide() {
       $(document).unbind( 'mousemove', mouseMoveHandler );
+      $(document).bind( 'mousemove', mouseMoveHandlerDry );
       $(document).unmousewheel( mouseWheelHandler );
       $(window).unbind( 'resize', scale );
       $('body').css('cursor','');
@@ -112,11 +122,28 @@ var jslide = (function() {
   // go to slide
   var current;
   function goToSlide(n) {
-    if( current !== undefined ) { 
+    var handler;
+    // leaving a slide or entering the presentation?
+    if( current !== undefined ) {
+      // fire onleave handler for current slide (may prevent leaving)
+      handler = $(slideList[current]).data('onleave');
+      if( handler && handler() === false ) {
+        return;
+      }
+
+      // hide current slide
       $(slideList[current]).css('left','-1999px');
       $(slideList[current]).css('opacity','0');
     }
     current = n;
+
+    // fire onenter hander before slide becomes visible
+    handler = $(slideList[current]).data('onenter');
+    if( handler ) {
+      handler();
+    }
+
+    // make visible changes
     window.location.hash = slideList[current].id;
     $(slideList[current]).css('opacity','1');
     scale();
@@ -139,10 +166,28 @@ var jslide = (function() {
   // initialization
   var slideList, spotLight;
   function init() {
-    var i, h;
+    var i, j, h,
+        common,
+        handlerList = ['onleave', 'onenter'];
+
     // build list of slides, hide all slides, show slide 0
     slideList = $('div.slide');
-    slideList.each( function(i,e) { $(e).css('left','-9999px'); })
+    slideList.each( function(i,e) { $(e).css('left','-9999px'); });
+
+    // append common content to all slides
+    common = $('.slidecommon').detach();
+    slideList.append(common);
+
+    // compile slide event handlers
+    slideList.each( function(i,e) {
+      var handler;
+      for( j = 0; j < handlerList.length; ++j ) {
+        handler =  $(e).data(handlerList[j]);
+        if( handler ) {
+          $(e).data(handlerList[j], new Function(handler) );
+        }
+      }
+    });
 
     // Spotlight
     spotLight = buildSpotLight(100);
