@@ -60,14 +60,14 @@ var jslide = (function() {
       $(document).bind( 'mousemove', mouseMoveHandler );
       $(document).mousewheel( mouseWheelHandler );
       $(window).bind( 'resize', scale );
-      $(canvas).fadeIn();
+      canvas.fadeIn();
       shown = true;
     }
     function hide() {
       $(document).unbind( 'mousemove', mouseMoveHandler );
       $(document).unmousewheel( mouseWheelHandler );
       $(window).unbind( 'resize', scale );
-      $(canvas).fadeOut();
+      canvas.fadeOut();
       shown = false;
     }
     function toggle() {
@@ -76,6 +76,7 @@ var jslide = (function() {
       } else {
         show();
       }
+      return shown;
     }
 
     return {
@@ -190,7 +191,7 @@ var jslide = (function() {
     prevSlide : prevSlide,
     freeze    : function() { frozen = true; },
     unfreeze  : function() { frozen = false; },
-    getStatus : function() { return [ current, slideList, ctx, im ]; }
+    getStatus : function() { return [ current, slideList, spotLight ]; }
   };
 })();
 
