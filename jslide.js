@@ -164,7 +164,7 @@ var jslide = (function() {
   }
 
   // initialization
-  var slideList, spotLight;
+  var slideList, stepTable, spotLight;
   function init() {
     var i, j, h,
         common,
@@ -188,6 +188,9 @@ var jslide = (function() {
         }
       }
     });
+
+    // analyse step-by-step reveal information
+    
 
     // Spotlight
     spotLight = buildSpotLight(100);
@@ -246,5 +249,18 @@ var jslide = (function() {
     getStatus : function() { return [ current, slideList, spotLight ]; }
   };
 })();
+
+function parseSteps(s) {
+  var steps = [],
+      items = s.split(','), range,
+      i;
+  for( i = 0; i < items.length; ++i ) {
+    range = items.split('-');
+    if( range.length == 1 ) {
+    }
+    if( range.length == 2 ) {
+    }
+  }
+}
 
 $(jslide.init);
