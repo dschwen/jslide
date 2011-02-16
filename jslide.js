@@ -5,8 +5,8 @@ var jslide = (function() {
         x, y;
 
     // build canvas
-    canvas = $('<canvas></canvas>').addClass('jslideSpotlight');
-    $(document).append(canvas);
+    canvas = $('<canvas/>').addClass('jslideSpotlight');
+    $('body').append(canvas);
 
     // initial position
     x = 0;
@@ -33,13 +33,13 @@ var jslide = (function() {
 
       // scale back and redraw
       scale();
-      draw();
     }
     function scale() {
       var w = $(window).width(),
           h = $(window).height();
       canvas[0].width = w;
       canvas[0].height = h;
+      draw();
     }
     function draw() {
       c.fillStyle = 'rgba(0,0,0,0.5)';
@@ -54,20 +54,25 @@ var jslide = (function() {
       draw();
     }
     function mouseWheelHandler(e, delta) {
-      recache( r + 10 * delta );
+      var newr = Math.floor( r + (10+r/10)*delta );
+      if( newr < 30 || newr > 1000 ) { return; }
+      x = x + r - newr;
+      y = y + r - newr;
+      recache( newr );
     }
     function show() {
       $(document).bind( 'mousemove', mouseMoveHandler );
       $(document).mousewheel( mouseWheelHandler );
       $(window).bind( 'resize', scale );
-      $(canvas).fadeIn();
+      scale();
+      canvas.fadeIn();
       shown = true;
     }
     function hide() {
       $(document).unbind( 'mousemove', mouseMoveHandler );
       $(document).unmousewheel( mouseWheelHandler );
       $(window).unbind( 'resize', scale );
-      $(canvas).fadeOut();
+      canvas.fadeOut();
       shown = false;
     }
     function toggle() {

@@ -86,7 +86,7 @@ div.centertitle {
 }
 
 /* helper class for the spotlight canvas (transparent for mouse interaction) */
-div.jslideSpotlight {
+canvas.jslideSpotlight {
   pointer-events: none;
   z-index: 10;
   position: absolute;
