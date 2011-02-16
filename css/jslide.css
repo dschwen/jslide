@@ -12,38 +12,7 @@ div.slide {
   padding: 70px 10px 30px 10px;
 }
 
-/* default slide theme (spit into seperate file to allow for multiple themes) */
-div.slide {
-  border-radius: 10px;
-  background-color: white;
-  -webkit-transition: all 0.5s ease-in-out;
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0.07, rgb(255,150,0)),
-    color-stop(0.07, rgb(200,200,200)),
-    color-stop(0.10, rgb(255,255,255)),
-    color-stop(0.99, rgb(205,205,255)),
-    color-stop(0.99, rgb(255,150,0))
-  );
-  background-image: -moz-linear-gradient(
-    center bottom,
-    rgb(200,1,136) 0%,
-    rgb(174,198,164) 66%,
-    rgb(209,238,197) 86%
-  );
-}
-img.logo {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  opacity: 0.25;
-  width: 50px;
-}
-
 /* headings (first h1 heading goes to the top of the slide) */
-h1, h2, h3, h4 { font-family: 'Droid Sans' }
 div.slide > h1:first-of-type {
   position: absolute;
   top: 6px;
@@ -51,8 +20,6 @@ div.slide > h1:first-of-type {
   margin: 0px;
   padding: 0px;
   display: block;
-  color: white;
-  text-shadow: 3px 3px 5px rgb(128,75,0);
 }
 
 /* center content horizontally and vertically */
@@ -110,7 +77,6 @@ div.twocol {
 
 /* suppress scroll bars (won't be needed in any case!) */
 body {
-  background-color: gray;
-  margin: 0px; padding: 0px;
   overflow: hidden;
+  margin: 0px; padding: 0px;
 }

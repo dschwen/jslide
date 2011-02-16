@@ -64,6 +64,7 @@ var jslide = (function() {
       $(document).bind( 'mousemove', mouseMoveHandler );
       $(document).mousewheel( mouseWheelHandler );
       $(window).bind( 'resize', scale );
+      $('body').css('cursor','crosshair');
       scale();
       canvas.fadeIn();
       shown = true;
@@ -72,6 +73,7 @@ var jslide = (function() {
       $(document).unbind( 'mousemove', mouseMoveHandler );
       $(document).unmousewheel( mouseWheelHandler );
       $(window).unbind( 'resize', scale );
+      $('body').css('cursor','');
       canvas.fadeOut();
       shown = false;
     }
