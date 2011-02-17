@@ -163,6 +163,42 @@ var jslide = (function() {
     }
   }
 
+function parseSteps(s) {
+  var passTwo = [], steps = [],
+      items = s.split(','), 
+      range = /^(\d+)-(\d+)$/,
+      num   = /^(\d+)$/,
+      i, j, m;
+  for( i = 0; i < items.length; ++i ) {
+    // range
+    m = range.exec( items[i] );
+    if( m ) {
+      if( m[1] == 0 ) {
+        throw 'Steps start at 1';
+      }
+      for( j = m[1]; j <= m[2]; j++ ) {
+        steps[j-1] = true;
+      }
+      continue;
+    }
+
+    // single step
+    m = num.exec( items[i] );
+    if( m ) {
+      if( m[1] == 0 ) {
+        throw 'Steps start at 1';
+      }
+      steps[m[1]-1] = true;
+      continue;
+    }
+
+    // invalid
+    throw 'Invalid step set:' + s;
+  }
+
+  return steps;
+}
+
   // initialization
   var slideList, stepTable, spotLight;
   function init() {
@@ -250,17 +286,5 @@ var jslide = (function() {
   };
 })();
 
-function parseSteps(s) {
-  var steps = [],
-      items = s.split(','), range,
-      i;
-  for( i = 0; i < items.length; ++i ) {
-    range = items.split('-');
-    if( range.length == 1 ) {
-    }
-    if( range.length == 2 ) {
-    }
-  }
-}
 
 $(jslide.init);
