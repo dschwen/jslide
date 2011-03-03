@@ -178,6 +178,8 @@ var jslide = (function() {
   function parseSteps(s) {
     var passTwo = [], steps = [],
         items = s.split(','), 
+        toEnd = /^(\d+)-$/,
+        fromBegin = /^-(\d+)$/,
         range = /^(\d+)-(\d+)$/,
         num   = /^(\d+)$/,
         i, j, m;
@@ -238,7 +240,14 @@ var jslide = (function() {
     });
 
     // analyse step-by-step reveal information
-    
+    slideList.each( function(i,e) {
+      var steps = $(e).data('steps');
+      if( steps !== undefined ) {
+        $(e).find('[step]').each( function(j,e) {
+          // hook into list
+        });
+      }
+    });
 
     // Spotlight
     spotLight = buildSpotLight(100);

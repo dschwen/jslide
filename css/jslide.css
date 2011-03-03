@@ -39,6 +39,10 @@ div.slideFarNext {
   top: 0px;
 }
 
+div.notRevealed {
+  opacity: 0.1;
+}
+
 /* headings (first h1 heading goes to the top of the slide) */
 div.slide > h1:first-of-type {
   position: absolute;
