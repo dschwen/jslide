@@ -103,6 +103,7 @@ var jslide = (function() {
 
   function scale() {
     var cs = $(slideList[current]),
+        sc = $('.slides'),
         ww = $(window).width(),
         wh = $(window).height(),
         ew = cs.outerWidth(),
@@ -112,11 +113,11 @@ var jslide = (function() {
         sy = Math.round((wh-eh*r)/2);
 
     // scale
-    $.each(['webkit','moz','o'], function(i,p) { cs.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
+    $.each(['webkit','moz','o'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
 
     // center
-    cs.css('left',sx+'px');
-    cs.css('top',sy+'px');
+    sc.css('left',sx+'px');
+    sc.css('top',sy+'px');
   }
 
   // go to slide
@@ -130,22 +131,33 @@ var jslide = (function() {
       if( handler && handler() === false ) {
         return;
       }
-
-      // hide current slide
-      $(slideList[current]).css('left','-1999px');
-      $(slideList[current]).css('opacity','0');
     }
     current = n;
 
-    // fire onenter hander before slide becomes visible
+    // fire onenter hander
     handler = $(slideList[current]).data('onenter');
     if( handler ) {
       handler();
     }
 
+    // reset visibility
+    slideList.each( function(i,e) { 
+      $(e).attr( 'class', slideClass[i] );
+      if( i == current ) {
+        $(e).addClass('slideCurrent');
+      } else if ( i == current-1 ) {
+        $(e).addClass('slidePrev');
+      } else if ( i == current+1 ) {
+        $(e).addClass('slideNext');
+      } else if ( i < current-1 ) {
+        $(e).addClass('slideFarPrev');
+      } else if ( i > current+1 ) {
+        $(e).addClass('slideFarNext');
+      }
+    } );
+
     // make visible changes
     window.location.hash = slideList[current].id;
-    $(slideList[current]).css('opacity','1');
     scale();
   }
 
@@ -163,52 +175,54 @@ var jslide = (function() {
     }
   }
 
-function parseSteps(s) {
-  var passTwo = [], steps = [],
-      items = s.split(','), 
-      range = /^(\d+)-(\d+)$/,
-      num   = /^(\d+)$/,
-      i, j, m;
-  for( i = 0; i < items.length; ++i ) {
-    // range
-    m = range.exec( items[i] );
-    if( m ) {
-      if( m[1] == 0 ) {
-        throw 'Steps start at 1';
+  function parseSteps(s) {
+    var passTwo = [], steps = [],
+        items = s.split(','), 
+        toEnd = /^(\d+)-$/,
+        fromBegin = /^-(\d+)$/,
+        range = /^(\d+)-(\d+)$/,
+        num   = /^(\d+)$/,
+        i, j, m;
+    for( i = 0; i < items.length; ++i ) {
+      // range
+      m = range.exec( items[i] );
+      if( m ) {
+        if( m[1] == 0 ) {
+          throw 'Steps start at 1';
+        }
+        for( j = m[1]; j <= m[2]; j++ ) {
+          steps[j-1] = true;
+        }
+        continue;
       }
-      for( j = m[1]; j <= m[2]; j++ ) {
-        steps[j-1] = true;
+
+      // single step
+      m = num.exec( items[i] );
+      if( m ) {
+        if( m[1] == 0 ) {
+          throw 'Steps start at 1';
+        }
+        steps[m[1]-1] = true;
+        continue;
       }
-      continue;
+
+      // invalid
+      throw 'Invalid step set:' + s;
     }
 
-    // single step
-    m = num.exec( items[i] );
-    if( m ) {
-      if( m[1] == 0 ) {
-        throw 'Steps start at 1';
-      }
-      steps[m[1]-1] = true;
-      continue;
-    }
-
-    // invalid
-    throw 'Invalid step set:' + s;
+    return steps;
   }
 
-  return steps;
-}
-
   // initialization
-  var slideList, stepTable, spotLight;
+  var slideList, slideClass = [], stepTable, spotLight;
   function init() {
     var i, j, h,
         common,
         handlerList = ['onleave', 'onenter'];
 
-    // build list of slides, hide all slides, show slide 0
+    // build list of slides, remember orignal classes
     slideList = $('div.slide');
-    slideList.each( function(i,e) { $(e).css('left','-9999px'); });
+    slideList.each( function(i,e) { slideClass[i] = $(e).attr('class') });
 
     // append common content to all slides
     common = $('.slidecommon').detach();
@@ -226,7 +240,14 @@ function parseSteps(s) {
     });
 
     // analyse step-by-step reveal information
-    
+    slideList.each( function(i,e) {
+      var steps = $(e).data('steps');
+      if( steps !== undefined ) {
+        $(e).find('[step]').each( function(j,e) {
+          // hook into list
+        });
+      }
+    });
 
     // Spotlight
     spotLight = buildSpotLight(100);
