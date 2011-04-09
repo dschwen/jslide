@@ -8,7 +8,7 @@ div.slides {
 }
 
 div.slide {
-  position: absolute;
+  position: fixed;
   width: 1004px; /*1024-10-10*/
   height: 686px; /*786-30-70*/
   padding: 70px 10px 30px 10px;
