@@ -1,6 +1,6 @@
 /* theme independent styling */
 div.slides {
-  position: absolute;
+  position: fixed;
   -webkit-transform-origin: 0 0;
   -moz-transform-origin: 0 0;
   -o-transform-origin: 0 0;

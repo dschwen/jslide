@@ -116,8 +116,7 @@ var jslide = (function() {
     $.each(['webkit','moz','o'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
 
     // center
-    sc.css('left',sx+'px');
-    sc.css('top',sy+'px');
+    sc.css( { left: sx+'px', top: sy+'px' } );
   }
 
   // go to slide
