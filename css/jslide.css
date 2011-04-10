@@ -10,10 +10,9 @@ div.slides {
 div.slide {
   position: fixed;
   width: 1004px; /*1024-10-10*/
-  height: 686px; /*786-30-70*/
+  height: 668px; /*768-30-70*/
   padding: 70px 10px 30px 10px;
 }
-
 div.slideCurrent {
   left: 0px;
   top: 0px;
@@ -87,11 +86,26 @@ div.centertitle {
 canvas.jslideSpotlight {
   pointer-events: none;
   z-index: 10;
-  position: absolute;
+  position: fixed;
   display: none;
   top: 0px;
   left: 0px;
 }
+
+/* element to host SVG overlay per slide (to draw arrows etc) */
+div.svgOverlay {
+  pointer-events: none;
+  z-index: 10;
+  position: fixed;
+  width: 1024px;
+  height: 768px;
+  top: 0px;
+  left: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+
 
 /* this add-on class seems to crash google chrome */
 div.twocol {

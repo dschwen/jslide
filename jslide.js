@@ -212,6 +212,38 @@ var jslide = (function() {
     return steps;
   }
 
+  // add svg overlay to current slide
+  function addOverlay( slide, callback ) {
+    var o = $('<div></div>').addClass('svgOverlay');
+    $(slide).append(o);
+    function initOverlay(svg) {
+      var d = svg.defs('myDefs');
+      var m = svg.marker(d,'overlayArrow',1,2,4,4,'auto'); 
+      svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]]);
+                                      
+      callback(svg);
+    }
+    o.svg( { onLoad: initOverlay } );
+  }
+  // get svg handler for slide
+  function getOverlay( slide ) {
+    return $(slide).find('.svgOverlay').svg('get');
+  }
+  // draw an arrow
+  function arrow(svg,x1,y1,x2,y2, options) {
+    svg.line( x1, y1, x2, y2, $.extend( { markerEnd: 'url(#overlayArrow)', strokeWidth: 5, stroke: 'blue' }, options ) );
+  }
+  // connect two elements on the slide with an arrow
+  // TODO write function to traverse relative positions up to slide level
+  function arrowFromTo( svg, from, to, options ) {
+    var f = $(from).position(), t = $(to).position(),
+        x1 = f.left + $(from).width()/2, 
+        x2 = t.left + $(to).width()/2,
+        y1 = f.top + $(from).height()/2,
+        y2 = t.top + $(to).height()/2;
+    arrow(svg,x1,y1,x2,y2,options);
+  }
+
   // initialization
   var slideList, slideClass = [], stepTable, spotLight;
   function init() {
@@ -302,9 +334,14 @@ var jslide = (function() {
     prevSlide : prevSlide,
     freeze    : function() { frozen = true; },
     unfreeze  : function() { frozen = false; },
+    addOverlay  : addOverlay,
+    getOverlay  : getOverlay,
+    arrow       : arrow,
+    arrowFromTo : arrowFromTo,
     getStatus : function() { return [ current, slideList, spotLight ]; }
   };
 })();
 
 
 $(jslide.init);
+
