@@ -1,6 +1,8 @@
 var jslide = (function() {
   var scaleFactor, // scale factor
-      current;     // current slide number
+      current,     // current slide number
+      acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
+      astyle = [];      // available arrow colors
 
   function buildSpotLight(r) {
     var canvas, c, grad, im,
@@ -222,10 +224,12 @@ var jslide = (function() {
     var o = $('<div></div>').addClass('svgOverlay');
     $(slide).append(o);
     function initOverlay(svg) {
-      var d = svg.defs('myDefs');
-      var m = svg.marker(d,'overlayArrow',3,2,4,4,'auto'); 
-      svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]]);
-                                      
+      var d,m,i;
+      d = svg.defs('myDefs');
+      for( var i=0; i<acolor.length; i++ ) {
+        m = svg.marker(d,acolor[i]+'Arrow',3,2,4,4,'auto'); 
+        svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]], { fill: acolor[i] } );
+      }                               
       callback(svg);
     }
     o.svg( { onLoad: initOverlay } );
@@ -236,7 +240,7 @@ var jslide = (function() {
   }
   // draw an arrow
   function arrow(svg,x1,y1,x2,y2, options) {
-    svg.line( x1, y1, x2, y2, $.extend( { markerEnd: 'url(#overlayArrow)', strokeWidth: 5, stroke: 'blue' }, options ) );
+    svg.line( x1, y1, x2, y2, $.extend( { strokeWidth: 5, opacity: 0.75 }, options ) );
   }
   // connect two elements on the slide with an arrow
   function arrowFromTo( slide, from, to, options ) {
@@ -339,6 +343,11 @@ var jslide = (function() {
           spotLight.toggle(); break;
       }
     } );
+
+    // polulate arrow style list
+    for( var i=0; i<acolor.length; i++ ) {
+      astyle[acolor[i]] = { markerEnd: 'url(#'+acolor[i]+'Arrow)', strokeWidth: 5, stroke: acolor[i] };
+    }
   }
 
   return {
@@ -352,7 +361,7 @@ var jslide = (function() {
     arrow        : arrow,
     arrowFromTo  : arrowFromTo,
     ellipseAround: ellipseAround,
-    style : { redArrow : { stroke: 'red' } },
+    astyle : astyle,
     getStatus : function() { return [ current, slideList, spotLight ]; }
   };
 })();
