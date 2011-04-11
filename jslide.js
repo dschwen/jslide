@@ -1,4 +1,7 @@
 var jslide = (function() {
+  var scaleFactor, // scale factor
+      current;     // current slide number
+
   function buildSpotLight(r) {
     var canvas, c, grad, im,
         shown = false,
@@ -101,6 +104,7 @@ var jslide = (function() {
     };
   };
 
+  // global: scaleFactor
   function scale() {
     var cs = $(slideList[current]),
         sc = $('.slides'),
@@ -114,13 +118,14 @@ var jslide = (function() {
 
     // scale
     $.each(['webkit','moz','o'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
+    scaleFactor = r;
 
     // center
     sc.css( { left: sx+'px', top: sy+'px' } );
   }
 
   // go to slide
-  var current;
+  // global: current
   function goToSlide(n) {
     var handler;
     // leaving a slide or entering the presentation?
@@ -218,7 +223,7 @@ var jslide = (function() {
     $(slide).append(o);
     function initOverlay(svg) {
       var d = svg.defs('myDefs');
-      var m = svg.marker(d,'overlayArrow',1,2,4,4,'auto'); 
+      var m = svg.marker(d,'overlayArrow',3,2,4,4,'auto'); 
       svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]]);
                                       
       callback(svg);
@@ -234,14 +239,22 @@ var jslide = (function() {
     svg.line( x1, y1, x2, y2, $.extend( { markerEnd: 'url(#overlayArrow)', strokeWidth: 5, stroke: 'blue' }, options ) );
   }
   // connect two elements on the slide with an arrow
-  // TODO write function to traverse relative positions up to slide level
-  function arrowFromTo( svg, from, to, options ) {
-    var f = $(from).position(), t = $(to).position(),
-        x1 = f.left + $(from).width()/2, 
-        x2 = t.left + $(to).width()/2,
-        y1 = f.top + $(from).height()/2,
-        y2 = t.top + $(to).height()/2;
-    arrow(svg,x1,y1,x2,y2,options);
+  function arrowFromTo( slide, from, to, options ) {
+    var f = $(from).offset(), t = $(to).offset(), s = $(slide).offset(), 
+        x1 = ( f.left - s.left )/scaleFactor + $(from).width()/2, 
+        x2 = ( t.left - s.left )/scaleFactor + $(to).width()/2,
+        y1 = ( f.top - s.top )/scaleFactor + $(from).height()/2,
+        y2 = ( t.top - s.top )/scaleFactor + $(to).height()/2;
+    arrow(getOverlay(slide),x1,y1,x2,y2,options);
+  }
+  // draw an ellipse around an element on the slide
+  function ellipseAround( slide, to, options ) {
+    var t = $(to).offset(), s = $(slide).offset(), 
+        rx = $(to).width()/2, 
+        x  = ( t.left - s.left )/scaleFactor  + rx,
+        ry = $(to).height()/2,
+        y  = ( t.top - s.top )/scaleFactor + ry;
+    getOverlay(slide).ellipse(x,y,rx*1.4,ry*1.4,$.extend( { strokeWidth: 5, stroke: 'blue', fill: 'none', opacity: 0.75 }, options ) );
   }
 
   // initialization
@@ -334,10 +347,12 @@ var jslide = (function() {
     prevSlide : prevSlide,
     freeze    : function() { frozen = true; },
     unfreeze  : function() { frozen = false; },
-    addOverlay  : addOverlay,
-    getOverlay  : getOverlay,
-    arrow       : arrow,
-    arrowFromTo : arrowFromTo,
+    addOverlay   : addOverlay,
+    getOverlay   : getOverlay,
+    arrow        : arrow,
+    arrowFromTo  : arrowFromTo,
+    ellipseAround: ellipseAround,
+    style : { redArrow : { stroke: 'red' } },
     getStatus : function() { return [ current, slideList, spotLight ]; }
   };
 })();
