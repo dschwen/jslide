@@ -261,6 +261,27 @@ var jslide = (function() {
     getOverlay(slide).ellipse(x,y,rx*1.4,ry*1.4,$.extend( { strokeWidth: 5, stroke: 'blue', fill: 'none', opacity: 0.75 }, options ) );
   }
 
+  // react on hashchange events
+  function hashchange() {
+    // honor url hash
+    h = window.location.hash.substr(1);
+    if( h !== '' ) {
+      for( i = 0; i < slideList.length; ++i ) {
+        if( slideList[i].id === h ) {
+          goToSlide(i);
+          break;
+        }
+      }
+      if( i == slideList.length ) {
+        // not found
+        alert( h + " not found" );
+        goToSlide(0);
+      }
+    } else {
+      goToSlide(0);
+    }
+  }
+
   // initialization
   var slideList, slideClass = [], stepTable, spotLight;
   function init() {
@@ -301,22 +322,10 @@ var jslide = (function() {
     spotLight = buildSpotLight(100);
 
     // honor url hash
-    h = window.location.hash.substr(1);
-    if( h !== '' ) {
-      for( i = 0; i < slideList.length; ++i ) {
-        if( slideList[i].id === h ) {
-          goToSlide(i);
-          break;
-        }
-      }
-      if( i == slideList.length ) {
-        // not found
-        alert( h + " not found" );
-        goToSlide(0);
-      }
-    } else {
-      goToSlide(0);
-    }
+    $(window).bind('hashchange',hashchange);
+    hashchange();  
+
+    // react on window resizes
     $(window).resize(scale);
     scale();
 
