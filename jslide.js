@@ -295,7 +295,7 @@ var jslide = (function() {
 
     // append common content to all slides
     common = $('.slidecommon').detach();
-    slideList.append(common);
+    slideList.not('.title').append(common);
 
     // compile slide event handlers
     slideList.each( function(i,e) {
@@ -357,6 +357,9 @@ var jslide = (function() {
     for( var i=0; i<acolor.length; i++ ) {
       astyle[acolor[i]] = { markerEnd: 'url(#'+acolor[i]+'Arrow)', strokeWidth: 5, stroke: acolor[i] };
     }
+
+    // enhance all video elements
+    $('video').toggle( function(){ this.play() }, function(){ this.pause() } );
   }
 
   return {
