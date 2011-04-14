@@ -117,8 +117,8 @@ var jslide = (function() {
         ew = cs.outerWidth(),
         eh = cs.outerHeight(),
         r = Math.min(ww/ew,wh/eh)/(overview?4:1),
-        sx = Math.round((ww-ew*r)/2),
-        sy = Math.round((wh-eh*r)/2);
+        sx = Math.round( overview ? 0 : (ww-ew*r)/2 ),
+        sy = Math.round( overview ? 0 : (wh-eh*r)/2 );
 
     // scale
     $.each(['webkit','moz','o'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
@@ -188,6 +188,9 @@ var jslide = (function() {
     scale();
   }
   function endOverview() {
+    $.each( slides, function(i,e) { 
+      $(e.div).css( { left: '', top: '' } );
+    } );
     overview = false;
     var i = current;
     current = null;
