@@ -131,7 +131,7 @@ var jslide = (function() {
   // go to slide
   // global: current
   function goToSlide(n) {
-    var handler;
+    var handler, ci, classList = [ 'FarPrev', 'Prev', 'Current', 'Next', 'FarNext' ];
     // leaving a slide or entering the presentation?
     if( current !== null ) {
       // fire onleave handler for current slide (may prevent leaving)
@@ -151,17 +151,8 @@ var jslide = (function() {
     // reset visibility
     $.each( slides, function(i,e) { 
       $(e.div).attr( 'class', slides[i].origClass );
-      if( i == current ) {
-        $(e.div).addClass('slideCurrent');
-      } else if ( i == current-1 ) {
-        $(e.div).addClass('slidePrev');
-      } else if ( i == current+1 ) {
-        $(e.div).addClass('slideNext');
-      } else if ( i < current-1 ) {
-        $(e.div).addClass('slideFarPrev');
-      } else if ( i > current+1 ) {
-        $(e.div).addClass('slideFarNext');
-      }
+      ci = i-current+2;
+      $(e.div).addClass( 'slide' + classList[ ci<0 ? 0 : ( ci>4 ? 4 : ci ) ] );
     } );
 
     // make visible changes
@@ -339,7 +330,7 @@ var jslide = (function() {
         case 38: // crsr up 
           prevSlide(); break;
         case 35: // end
-          goToSlide(slideList.length-1); break;
+          goToSlide( slides.length - 1 ); break;
         case 36: // home
           goToSlide(0); break;
         case 83 : // s
