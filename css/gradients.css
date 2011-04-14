@@ -1,0 +1,45 @@
+.limeGradient {
+  background-color: white;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, rgb(255,255,255)),
+    color-stop(1, rgb(200,255,200))
+  );
+  background-image: -moz-linear-gradient(
+    top,
+    rgb(255,255,255) 0%,
+    rgb(200,255,200) 100%
+  );
+}
+.pinkGradient {
+  background-color: white;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, rgb(255,255,255)),
+    color-stop(1, rgb(255,200,200))
+  );
+  background-image: -moz-linear-gradient(
+    top,
+    rgb(255,255,255) 0%,
+    rgb(255,200,200) 100%
+  );
+}
+.skyGradient {
+  background-color: white;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0, rgb(255,255,255)),
+    color-stop(1, rgb(200,200,255))
+  );
+  background-image: -moz-linear-gradient(
+    top,
+    rgb(255,255,255) 0%,
+    rgb(200,200,255) 100%
+  );
+}
