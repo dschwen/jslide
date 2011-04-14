@@ -2,7 +2,9 @@ var jslide = (function() {
   var scaleFactor, // scale factor
       current,     // current slide number
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
-      astyle = [];      // available arrow colors
+      astyle = [],      // available arrow colors
+      slideList, slideClass = [], stepTable, spotLight,
+      overview = false;
 
   function buildSpotLight(r) {
     var canvas, c, grad, im,
@@ -114,7 +116,7 @@ var jslide = (function() {
         wh = $(window).height(),
         ew = cs.outerWidth(),
         eh = cs.outerHeight(),
-        r = Math.min(ww/ew,wh/eh),
+        r = Math.min(ww/ew,wh/eh)/(overview?4:1),
         sx = Math.round((ww-ew*r)/2),
         sy = Math.round((wh-eh*r)/2);
 
@@ -229,7 +231,7 @@ var jslide = (function() {
       for( var i=0; i<acolor.length; i++ ) {
         m = svg.marker(d,acolor[i]+'Arrow',3,2,4,4,'auto'); 
         svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]], { fill: acolor[i] } );
-      }                               
+      }
       callback(svg);
     }
     o.svg( { onLoad: initOverlay } );
@@ -283,7 +285,7 @@ var jslide = (function() {
   }
 
   // initialization
-  var slideList, slideClass = [], stepTable, spotLight;
+  // global: slideList, slideClass = [], stepTable, spotLight;
   function init() {
     var i, j, h,
         common,
@@ -350,6 +352,10 @@ var jslide = (function() {
           goToSlide(0); break;
         case 83 : // s
           spotLight.toggle(); break;
+        case 79 : // o
+          overview = !overview;
+          scale();
+          break;
       }
     } );
 
