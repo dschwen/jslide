@@ -323,7 +323,7 @@ var jslide = (function() {
       // compile slide event handlers
       for( j = 0; j < handlerList.length; ++j ) {
         handler =  $(e).data(handlerList[j]);
-        if( handler ) {
+        if( handler && typeof handler === 'string' ) {
           $(e).data(handlerList[j], new Function(handler) );
         }
       }
