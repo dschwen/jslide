@@ -1,9 +1,9 @@
 var jslide = (function() {
   var scaleFactor, // scale factor
-      current,     // current slide number
+      current = null,     // current slide number
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
       astyle = [],      // available arrow colors
-      slideList, slideClass = [], stepTable, spotLight,
+      slides, spotLight,
       overview = false;
 
   function buildSpotLight(r) {
@@ -110,7 +110,7 @@ var jslide = (function() {
 
   // global: scaleFactor
   function scale() {
-    var cs = $(slideList[current]),
+    var cs = $(slides[current].div),
         sc = $('.slides'),
         ww = $(window).width(),
         wh = $(window).height(),
@@ -133,9 +133,9 @@ var jslide = (function() {
   function goToSlide(n) {
     var handler;
     // leaving a slide or entering the presentation?
-    if( current !== undefined ) {
+    if( current !== null ) {
       // fire onleave handler for current slide (may prevent leaving)
-      handler = $(slideList[current]).data('onleave');
+      handler = $(slides[current].div).data('onleave');
       if( handler && handler() === false ) {
         return;
       }
@@ -143,35 +143,35 @@ var jslide = (function() {
     current = n;
 
     // fire onenter hander
-    handler = $(slideList[current]).data('onenter');
+    handler = $(slides[current].div).data('onenter');
     if( handler ) {
       handler();
     }
 
     // reset visibility
-    slideList.each( function(i,e) { 
-      $(e).attr( 'class', slideClass[i] );
+    $.each( slides, function(i,e) { 
+      $(e.div).attr( 'class', slides[i].origClass );
       if( i == current ) {
-        $(e).addClass('slideCurrent');
+        $(e.div).addClass('slideCurrent');
       } else if ( i == current-1 ) {
-        $(e).addClass('slidePrev');
+        $(e.div).addClass('slidePrev');
       } else if ( i == current+1 ) {
-        $(e).addClass('slideNext');
+        $(e.div).addClass('slideNext');
       } else if ( i < current-1 ) {
-        $(e).addClass('slideFarPrev');
+        $(e.div).addClass('slideFarPrev');
       } else if ( i > current+1 ) {
-        $(e).addClass('slideFarNext');
+        $(e.div).addClass('slideFarNext');
       }
     } );
 
     // make visible changes
-    window.location.hash = slideList[current].id;
+    window.location.hash = slides[current].div.id;
     scale();
   }
 
   // next slide
   function nextSlide() {
-    if( current < slideList.length-1 ) {
+    if( current < slides.length-1 ) {
       goToSlide(current+1);
     }
   }
@@ -267,65 +267,57 @@ var jslide = (function() {
   function hashchange() {
     // honor url hash
     h = window.location.hash.substr(1);
-    if( h !== '' ) {
-      for( i = 0; i < slideList.length; ++i ) {
-        if( slideList[i].id === h ) {
-          goToSlide(i);
-          break;
-        }
+    $.each( slides, function(i,e) {
+      if( slides[i].div.id === h && i !== current ) {
+        goToSlide(i);
+        return false;
       }
-      if( i == slideList.length ) {
-        // not found
-        alert( h + " not found" );
-        goToSlide(0);
-      }
-    } else {
+    } );
+
+    // manually navigated to a non-existing hash
+    if( current === null ) {
       goToSlide(0);
     }
   }
 
   // initialization
-  // global: slideList, slideClass = [], stepTable, spotLight;
+  // global: slides, spotLight;
   function init() {
     var i, j, h,
-        common,
+        common = $('.slidecommon').detach(),
         handlerList = ['onleave', 'onenter'];
 
-    // build list of slides, remember orignal classes
-    slideList = $('div.slide');
-    slideList.each( function(i,e) { slideClass[i] = $(e).attr('class') });
+    slides = [];
+    $('div.slide').each( function(i,e) {
+      var handler, steps = $(e).data('steps');
 
-    // append common content to all slides
-    common = $('.slidecommon').detach();
-    slideList.not('.title').append(common);
+      // build list of slides, remember orignal classes
+      slides[i] = { div: e, origClass: $(e).attr('class') }
 
-    // compile slide event handlers
-    slideList.each( function(i,e) {
-      var handler;
+      // compile slide event handlers
       for( j = 0; j < handlerList.length; ++j ) {
         handler =  $(e).data(handlerList[j]);
         if( handler ) {
           $(e).data(handlerList[j], new Function(handler) );
         }
       }
-    });
 
-    // analyse step-by-step reveal information
-    slideList.each( function(i,e) {
-      var steps = $(e).data('steps');
+      // analyse step-by-step reveal information
       if( steps !== undefined ) {
         $(e).find('[step]').each( function(j,e) {
           // hook into list
         });
       }
-    });
+    } )
+    // append common content to all slides
+    .not('.title').append(common);
 
     // Spotlight
     spotLight = buildSpotLight(100);
 
     // honor url hash
-    $(window).bind('hashchange',hashchange);
     hashchange();  
+    $(window).bind('hashchange',hashchange);
 
     // react on window resizes
     $(window).resize(scale);
@@ -380,7 +372,7 @@ var jslide = (function() {
     arrowFromTo  : arrowFromTo,
     ellipseAround: ellipseAround,
     astyle : astyle,
-    getStatus : function() { return [ current, slideList, spotLight ]; }
+    getStatus : function() { return [ current, slides, spotLight ]; }
   };
 })();
 
