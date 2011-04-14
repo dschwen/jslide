@@ -3,7 +3,7 @@ var jslide = (function() {
       current = null,     // current slide number
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
       astyle = [],      // available arrow colors
-      slides, spotLight,
+      slides, spotLight, maxSize = { w:0, h:0 },
       overview = false;
 
   function buildSpotLight(r) {
@@ -133,7 +133,7 @@ var jslide = (function() {
   function goToSlide(n) {
     var handler, ci, classList = [ 'FarPrev', 'Prev', 'Current', 'Next', 'FarNext' ];
     // leaving a slide or entering the presentation?
-    if( current !== null ) {
+    if( !overview && current !== null ) {
       // fire onleave handler for current slide (may prevent leaving)
       handler = $(slides[current].div).data('onleave');
       if( handler && handler() === false ) {
@@ -144,16 +144,20 @@ var jslide = (function() {
 
     // fire onenter hander
     handler = $(slides[current].div).data('onenter');
-    if( handler ) {
+    if( !overview && handler ) {
       handler();
     }
 
-    // reset visibility
-    $.each( slides, function(i,e) { 
-      $(e.div).attr( 'class', slides[i].origClass );
-      ci = i-current+2;
-      $(e.div).addClass( 'slide' + classList[ ci<0 ? 0 : ( ci>4 ? 4 : ci ) ] );
-    } );
+    // change visibility
+    if( overview ) {
+      // move border (opacity?), scroll into view
+    } else {
+      $.each( slides, function(i,e) { 
+        $(e.div).attr( 'class', slides[i].origClass );
+        ci = i-current+2;
+        $(e.div).addClass( 'slide' + classList[ ci<0 ? 0 : ( ci>4 ? 4 : ci ) ] );
+      } );
+    }
 
     // make visible changes
     window.location.hash = slides[current].div.id;
@@ -171,6 +175,30 @@ var jslide = (function() {
   function prevSlide() {
     if( current > 0 ) {
       goToSlide(current-1);
+    }
+  }
+
+  // overview
+  function startOverview() {
+    $.each( slides, function(i,e) { 
+      $(e.div).attr( 'class', slides[i].origClass )
+        .css( { left: (i%4) * 1100, top: Math.floor(i/4) * 800 } );
+    } );
+    overview = true;
+    scale();
+  }
+  function endOverview() {
+    overview = false;
+    var i = current;
+    current = null;
+    goToSlide(i);
+    scale();
+  }
+  function toggleOverview() {
+    if( overview ) { 
+      endOverview();
+    } else {
+      startOverview();
     }
   }
 
@@ -285,6 +313,10 @@ var jslide = (function() {
       // build list of slides, remember orignal classes
       slides[i] = { div: e, origClass: $(e).attr('class') }
 
+      // find largest dimensions (should all be the same actually)
+      maxSize.w = Math.max( maxSize.w, $(e).outerWidth() );
+      maxSize.h = Math.max( maxSize.h, $(e).outerHeight() );
+
       // compile slide event handlers
       for( j = 0; j < handlerList.length; ++j ) {
         handler =  $(e).data(handlerList[j]);
@@ -336,8 +368,7 @@ var jslide = (function() {
         case 83 : // s
           spotLight.toggle(); break;
         case 79 : // o
-          overview = !overview;
-          scale();
+          toggleOverview();
           break;
       }
     } );
