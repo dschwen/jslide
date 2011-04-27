@@ -12,6 +12,10 @@ div.slide {
   width: 1004px; /*1024-10-10*/
   height: 668px; /*768-30-70*/
   padding: 70px 10px 30px 10px;
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
 }
 div.slideCurrent {
   left: 0px;
