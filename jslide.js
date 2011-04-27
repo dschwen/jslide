@@ -10,9 +10,11 @@ var jslide = (function() {
     var canvas, c, grad, im,
         shown = false,
         x, y;
+        dirty = null;
 
     // build canvas
     canvas = $('<canvas/>').addClass('jslideSpotlight');
+    $(window).resize( function() { dirty = null } );
     $('body').append(canvas);
 
     // initial position
@@ -42,6 +44,7 @@ var jslide = (function() {
       im = c.getImageData( 0, 0, 2*r, 2*r );
 
       // scale back and redraw
+      dirty = null;
       scale();
     }
     function scale() {
@@ -53,9 +56,15 @@ var jslide = (function() {
     }
     function draw() {
       c.fillStyle = 'rgba(0,0,0,0.5)';
-      c.clearRect(0,0,canvas[0].width,canvas[0].height);
-      c.fillRect(0,0,canvas[0].width,canvas[0].height);
+      if( dirty === null ) {
+        c.clearRect(0,0,canvas[0].width,canvas[0].height);
+        c.fillRect(0,0,canvas[0].width,canvas[0].height);
+      } else {
+        c.clearRect(dirty.x,dirty.y,dirty.w,dirty.h);
+        c.fillRect(dirty.x,dirty.y,dirty.w,dirty.h);
+      }
       c.putImageData( im, x, y );
+      dirty = { x: x, y: y, w: im.width, h: im.height };
     }
     function mouseMoveHandler(e) {
       var coord = e.pageX + ' ' + e.pageY;
@@ -82,6 +91,7 @@ var jslide = (function() {
       $(window).bind( 'resize', scale );
       $('body').css('cursor','crosshair');
       scale();
+      dirty = null;
       canvas.fadeIn();
       shown = true;
     }
