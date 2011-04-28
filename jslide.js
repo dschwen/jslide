@@ -191,15 +191,16 @@ var jslide = (function() {
   // overview
   function startOverview() {
     $.each( slides, function(i,e) { 
-      $(e.div).attr( 'class', slides[i].origClass )
-        .css( { left: (i%4) * 1100, top: Math.floor(i/4) * 800 } );
+      $(e.div).attr( 'class', slides[i].origClass ).addClass('slideThumb');
+      //  .css( { left: (i%4) * 1100, top: Math.floor(i/4) * 800 } );
     } );
     overview = true;
     scale();
   }
   function endOverview() {
     $.each( slides, function(i,e) { 
-      $(e.div).css( { left: '', top: '' } );
+      $(e.div).removeClass('slideThumb');
+      //$(e.div).css( { left: '', top: '' } );
     } );
     overview = false;
     var i = current;
