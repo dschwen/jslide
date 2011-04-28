@@ -313,6 +313,21 @@ var jslide = (function() {
     }
   }
 
+  // build al flot plots from data stored in separate files
+  function buildPlots() {
+    $('div.plot').each( function(i,e) {
+      function onDataReceived(file) {
+        $.plot($(e), file.data, file.options);
+      }
+      $.ajax({
+            url: $(e).data('file'),
+            method: 'GET',
+            dataType: 'json',
+            success: onDataReceived
+        });
+    });
+  }
+
   // initialization
   // global: slides, spotLight;
   function init() {
@@ -394,6 +409,12 @@ var jslide = (function() {
 
     // enhance all video elements
     $('video').toggle( function(){ this.play() }, function(){ this.pause() } );
+    
+    // build all plots
+    buildPlots();
+    
+    // apply step-by-step revieal info
+    // TODO
   }
 
   return {
