@@ -4,7 +4,8 @@ var jslide = (function() {
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
       astyle = [],      // available arrow colors
       slides, spotLight, maxSize = { w:0, h:0 },
-      overview = false;
+      overview = false,
+      clockHandler = null, clockDiv = null;
 
   function buildSpotLight(r) {
     var canvas, c, grad, im,
@@ -323,9 +324,36 @@ var jslide = (function() {
             url: $(e).data('file'),
             method: 'GET',
             dataType: 'json',
-            success: onDataReceived
+            success: onDataReceived,
+            error: function(x,t,e) { $(e).html('Error:'+t).css('background-color','red'); }
         });
     });
+  }
+  
+  // show/hide the time
+  function toggleClock() {
+    var time, d;
+    
+    function updateTime() {
+      time += 1000;
+      d.setTime(time);
+      clockDiv.html( d.toLocaleTimeString() );
+    }
+    
+    if( clockHandler === null ) {
+      if( clockDiv === null ) {
+        $('body').append( clockDiv = $('<div></div>').addClass('clock') );
+      }
+      d = new Date();
+      time = d.getTime();
+      clockDiv.html( d.toLocaleTimeString() );
+      clockDiv.fadeIn();
+      clockHandler = setInterval( updateTime, 1000 );
+    } else {
+      clearInterval(clockHandler);
+      clockHandler = null;
+      clockDiv.fadeOut();
+    }
   }
 
   // initialization
@@ -398,6 +426,12 @@ var jslide = (function() {
           spotLight.toggle(); break;
         case 79 : // o
           toggleOverview();
+          break;
+        case 80: // p
+          buildPlots();
+          break;
+        case 67: // c
+          toggleClock();
           break;
       }
     } );
