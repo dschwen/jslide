@@ -316,8 +316,46 @@ var jslide = (function() {
 
   // build al flot plots from data stored in separate files
   function buildPlots() {
+    function log10Transform(v) {
+      return Math.log(v)/Math.log(10);
+    }
+    function log10InverseTransform(v) {
+      return Math.pow(10,v);
+    }
+    function log10TickGenerator(axis) {
+      if( axis.min <= 0 ) { throw 'Negative ragnge for log scale'; }
+      var res = [], c = 1, // prefactor c*10^p
+          a, p = Math.floor(Math.log(axis.min)/Math.log(10)); // exponent
+
+      do {
+        a = c*Math.pow(10,p);
+        if( a >= axis.min && a <= axis.max ) {
+          if( c == 1 ) {
+            res.push([a,'10<sup>'+p+'</sup>']);
+          } else {
+            res.push([a,'']);
+          }
+        }
+
+        c++;
+        if( c == 10 ) {
+          c = 1;
+          p++;
+        }
+      } while(a < axis.max )
+
+      return res;
+    }
+
     $('div.plot').each( function(i,e) {
       function onDataReceived(file) {
+        $.each( ['xaxis','yaxis'], function( i, axis ) { 
+          if( file.aux[axis] = 'log' ) {
+            file.options[axis].ticks = log10TickGenerator;
+            file.options[axis].transform = log10Transform;
+            file.options[axis].inverseTransform = log10InverseTransform;
+          }
+        } );
         $.plot($(e), file.data, file.options);
       }
       $.ajax({
