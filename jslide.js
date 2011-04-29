@@ -358,13 +358,18 @@ var jslide = (function() {
         } );
         $.plot($(e), file.data, file.options);
       }
-      $.ajax({
-            url: $(e).data('file'),
-            method: 'GET',
-            dataType: 'json',
-            success: onDataReceived,
-            error: function(x,t,e) { $(e).html('Error:'+t).css('background-color','red'); }
-        });
+      var url = $(e).data('file');
+      if( url.substr(0,1) == '#' ) {
+        onDataReceived( $.parseJSON( $(url).html() ) );
+      } else {
+        $.ajax({
+              url: url,
+              method: 'GET',
+              dataType: 'json',
+              success: onDataReceived,
+              error: function(x,t,e) { $(e).html('Error:'+t).css('background-color','red'); }
+          });
+      }
     });
   }
   
