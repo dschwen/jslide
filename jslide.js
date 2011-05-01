@@ -1,7 +1,7 @@
 var jslide = (function() {
   var scaleFactor, // scale factor
       current = null,     // current slide number
-      currentstep = 0;    // current reveal step
+      currentstep = 0,    // current reveal step
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
       astyle = [],      // available arrow colors
       slides, spotLight, maxSize = { w:0, h:0 },
@@ -153,6 +153,16 @@ var jslide = (function() {
       }
     }
     current = n;
+    currentstep = 0;
+
+    // hide all elements not visible in step 0 instantly
+    $.each( slides[current].hide[0] || [], function(i,e) {
+      $(e).fadeTo(0,0);
+    });
+    // show all elements visible in step 0 instantly
+    $.each( slides[current].reveal[0] || [], function(i,e) {
+      $(e).fadeTo(0,1);
+    });
 
     // fire onenter hander
     handler = $(slides[current].div).data('onenter');
@@ -178,8 +188,20 @@ var jslide = (function() {
 
   // next slide
   function nextSlide() {
-    if( current < slides.length-1 ) {
-      goToSlide(current+1);
+    currentstep++;
+    if( currentstep < Math.max( slides[current].hide.length, slides[current].reveal.length ) ) {
+      // hide all elements not visible in current step
+      $.each( slides[current].hide[currentstep] || [], function(i,e) {
+        $(e).fadeTo(500,0);
+      });
+      // show all elements visible in current step
+      $.each( slides[current].reveal[currentstep] || [], function(i,e) {
+        $(e).fadeTo(500,1);
+      });
+    } else {
+      if( current < slides.length-1 ) {
+        goToSlide(current+1);
+      }
     }
   }
 
@@ -241,6 +263,16 @@ var jslide = (function() {
 
       // single step
       m = num.exec( items[i] );
+      if( m ) {
+        if( m[1] == 0 ) {
+          throw 'Steps start at 1';
+        }
+        steps[m[1]-1] = true;
+        continue;
+      }
+
+      // toEnd
+      m = toEnd.exec( items[i] );
       if( m ) {
         if( m[1] == 0 ) {
           throw 'Steps start at 1';
@@ -377,13 +409,13 @@ var jslide = (function() {
   // show/hide the time
   function toggleClock() {
     var time, d;
-    
+
     function updateTime() {
       time += 1000;
       d.setTime(time);
       clockDiv.html( d.toLocaleTimeString() );
     }
-    
+
     if( clockHandler === null ) {
       if( clockDiv === null ) {
         $('body').append( clockDiv = $('<div></div>').addClass('clock') );
@@ -409,13 +441,14 @@ var jslide = (function() {
 
     slides = [];
     $('div.slide').each( function(i,e) {
-      var handler, steps = $(e).data('steps');
+      var handler, steps = parseInt($(e).data('steps')) || 0;
 
       // build list of slides, remember orignal classes
-      slides[i] = { 
-        div: e, 
-        origClass: $(e).attr('class'), 
-        hide: [], reveal: []
+      slides[i] = {
+        div: e,
+        origClass: $(e).attr('class'),
+        hide:   new Array(steps),
+        reveal: new Array(steps)
       }
 
       // find largest dimensions (should all be the same actually)
@@ -435,11 +468,11 @@ var jslide = (function() {
 
     // analyse step-by-step reveal information
     $.each( slides, function(i,e) {
-      $(e.div).attr.find('[data-step]').each( function(j,f) {
+      $(e.div).find('[data-step]').each( function(j,f) {
         // hook into list
         var steps = parseSteps( $(f).data('step') );
         // initial state
-        for( var k = 0; k < steps.length ) {
+        for( var k = 0; k < steps.length; ++k ) {
           if( steps[k] == true && ( k==0 || steps[k-1] != true ) ) {
             if( e.reveal[k] ) {
               e.reveal[k].push(f);
