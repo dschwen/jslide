@@ -207,8 +207,20 @@ var jslide = (function() {
 
   // previous slide
   function prevSlide() {
-    if( current > 0 ) {
-      goToSlide(current-1);
+    currentstep--;
+    if( currentstep >= 0 ) {
+      // reveal all elements hidden in the next step
+      $.each( slides[current].hide[currentstep+1] || [], function(i,e) {
+        $(e).fadeTo(500,1);
+      });
+      // hide all elements revealed in the nest step
+      $.each( slides[current].reveal[currentstep+1] || [], function(i,e) {
+        $(e).fadeTo(500,0);
+      });
+    } else {
+      if( current > 0 ) {
+        goToSlide(current-1);
+      }
     }
   }
 
