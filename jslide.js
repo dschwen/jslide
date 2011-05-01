@@ -1,6 +1,7 @@
 var jslide = (function() {
   var scaleFactor, // scale factor
       current = null,     // current slide number
+      currentstep = 0;    // current reveal step
       acolor = ['red','green','blue','yellow','magenta','pink','brown','black'],
       astyle = [],      // available arrow colors
       slides, spotLight, maxSize = { w:0, h:0 },
@@ -411,7 +412,11 @@ var jslide = (function() {
       var handler, steps = $(e).data('steps');
 
       // build list of slides, remember orignal classes
-      slides[i] = { div: e, origClass: $(e).attr('class') }
+      slides[i] = { 
+        div: e, 
+        origClass: $(e).attr('class'), 
+        hide: [], reveal: []
+      }
 
       // find largest dimensions (should all be the same actually)
       maxSize.w = Math.max( maxSize.w, $(e).outerWidth() );
@@ -424,16 +429,34 @@ var jslide = (function() {
           $(e).data(handlerList[j], new Function(handler) );
         }
       }
-
-      // analyse step-by-step reveal information
-      if( steps !== undefined ) {
-        $(e).find('[step]').each( function(j,e) {
-          // hook into list
-        });
-      }
     } )
     // append common content to all slides
     .not('.title').append(common);
+
+    // analyse step-by-step reveal information
+    $.each( slides, function(i,e) {
+      $(e.div).attr.find('[data-step]').each( function(j,f) {
+        // hook into list
+        var steps = parseSteps( $(f).data('step') );
+        // initial state
+        for( var k = 0; k < steps.length ) {
+          if( steps[k] == true && ( k==0 || steps[k-1] != true ) ) {
+            if( e.reveal[k] ) {
+              e.reveal[k].push(f);
+            } else {
+              e.reveal[k] = [ f ];
+            }
+          }
+          if( steps[k] != true && ( k==0 || steps[k-1] == true ) ) {
+            if( e.hide[k] ) {
+              e.hide[k].push(f);
+            } else {
+              e.hide[k] = [ f ];
+            }
+          }
+        }
+      });
+    } );
 
     // Spotlight
     spotLight = buildSpotLight(100);
