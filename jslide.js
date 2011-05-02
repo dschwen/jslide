@@ -463,6 +463,32 @@ var jslide = (function() {
     }
   }
 
+  // progress spinner
+  function progressSpinner( slideSelector, numSteps ) {
+    var canvas =  $('<canvas width="160" height="160"></canvas>').addClass('stepprogress').appendTo(slideSelector),
+              //.attr( {width: 100, height: 100 } )
+        c = canvas[0].getContext('2d'),
+        w = canvas[0].width,
+        h = canvas[0].height,
+        T = 2.0*Math.PI/numSteps, // slice width
+        dT = Math.PI/180.0 * 8.0, // spacing
+        r = Math.min(w,h)/2;
+
+    c.fillStyle = 'rgba(0,0,0,0.125)';
+    c.fillRect(0,0,w,h);
+    // newstep event handler
+    return function(n) {
+      var i;
+      c.clearRect(0,0,w,h);
+      for( i = n; i < numSteps; ++i ) {
+        c.beginPath();
+        c.arc( w/2, h/2, r,   i*T + dT/2 - Math.PI/2, (i+1)*T - dT/2 - Mat:qh.PI/2, false );
+        c.arc( w/2, h/2, r/4, (i+1)*T - dT/2 - Math.PI/2, i*T + dT/2 - Math.PI/2, true );
+        c.fill();
+      }
+    }
+  }
+
   // initialization
   // global: slides, spotLight;
   function init() {
@@ -593,7 +619,8 @@ var jslide = (function() {
     arrowFromTo  : arrowFromTo,
     ellipseAround: ellipseAround,
     astyle : astyle,
-    getStatus : function() { return [ current, slides, spotLight ]; }
+    getStatus : function() { return [ current, slides, spotLight ]; },
+    progressSpinner : progressSpinner
   };
 })();
 
