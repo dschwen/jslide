@@ -198,7 +198,9 @@ var jslide = (function() {
     var handler = $(slides[current].div).data('onnewstep');
 
     currentstep++;
-    if( !skip && currentstep < Math.max( slides[current].hide.length, slides[current].reveal.length ) ) {
+    // total number of steps is determined by the last step that reveals anything
+    // or by explicitly specifying it with data-stems on the slide div
+    if( !skip && currentstep < slides[current].reveal.length ) {
       // hide all elements not visible in current step
       $.each( slides[current].hide[currentstep] || [], function(i,e) {
         $(e).fadeTo(500,0);
@@ -273,7 +275,7 @@ var jslide = (function() {
 
   function parseSteps(s) {
     var passTwo = [], steps = [],
-        items = s.split(','), 
+        items = (s+'').split(','), 
         toEnd = /^(\d+)-$/,
         fromBegin = /^-(\d+)$/,
         range = /^(\d+)-(\d+)$/,
@@ -387,7 +389,7 @@ var jslide = (function() {
       return Math.pow(10,v);
     }
     function log10TickGenerator(axis) {
-      if( axis.min <= 0 ) { throw 'Negative ragnge for log scale'; }
+      if( axis.min <= 0 ) { throw 'Negative range for log scale'; }
       var res = [], c = 1, // prefactor c*10^p
           a, p = Math.floor(Math.log(axis.min)/Math.log(10)); // exponent
 
@@ -544,6 +546,13 @@ var jslide = (function() {
               e.hide[k] = [ f ];
             }
           }
+        }
+        
+        // add final hide step
+        if( e.hide[steps.length] ) {
+          e.hide[steps.length].push(f);
+        } else {
+          e.hide[steps.length] = [ f ];
         }
       });
     } );
