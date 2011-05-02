@@ -482,7 +482,7 @@ var jslide = (function() {
       c.clearRect(0,0,w,h);
       for( i = n; i < numSteps; ++i ) {
         c.beginPath();
-        c.arc( w/2, h/2, r,   i*T + dT/2 - Math.PI/2, (i+1)*T - dT/2 - Mat:qh.PI/2, false );
+        c.arc( w/2, h/2, r,   i*T + dT/2 - Math.PI/2, (i+1)*T - dT/2 - Math.PI/2, false );
         c.arc( w/2, h/2, r/4, (i+1)*T - dT/2 - Math.PI/2, i*T + dT/2 - Math.PI/2, true );
         c.fill();
       }
