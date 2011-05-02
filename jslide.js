@@ -164,10 +164,17 @@ var jslide = (function() {
       $(e).fadeTo(0,1);
     });
 
-    // fire onenter hander
-    handler = $(slides[current].div).data('onenter');
-    if( !overview && handler ) {
-      handler();
+    if( !overview ) {
+      // fire onenter hander
+      handler = $(slides[current].div).data('onenter');
+      if( handler ) {
+        handler();
+      }
+      // fire newstep handler
+      handler = $(slides[current].div).data('onnewstep');
+      if( handler ) {
+        handler(1);
+      }
     }
 
     // change visibility
@@ -187,9 +194,11 @@ var jslide = (function() {
   }
 
   // next slide
-  function nextSlide() {
+  function nextSlide(skip) {
+    var handler = $(slides[current].div).data('onnewstep');
+
     currentstep++;
-    if( currentstep < Math.max( slides[current].hide.length, slides[current].reveal.length ) ) {
+    if( !skip && currentstep < Math.max( slides[current].hide.length, slides[current].reveal.length ) ) {
       // hide all elements not visible in current step
       $.each( slides[current].hide[currentstep] || [], function(i,e) {
         $(e).fadeTo(500,0);
@@ -198,6 +207,10 @@ var jslide = (function() {
       $.each( slides[current].reveal[currentstep] || [], function(i,e) {
         $(e).fadeTo(500,1);
       });
+      // call newstep event handler
+      if( handler ) {
+        handler(currentstep+1); // step numbers start at 1
+      }
     } else {
       if( current < slides.length-1 ) {
         goToSlide(current+1);
@@ -206,9 +219,11 @@ var jslide = (function() {
   }
 
   // previous slide
-  function prevSlide() {
+  function prevSlide(skip) {
+    var handler = $(slides[current].div).data('onnewstep');
+
     currentstep--;
-    if( currentstep >= 0 ) {
+    if( !skip &&  currentstep >= 0 ) {
       // reveal all elements hidden in the next step
       $.each( slides[current].hide[currentstep+1] || [], function(i,e) {
         $(e).fadeTo(500,1);
@@ -217,6 +232,10 @@ var jslide = (function() {
       $.each( slides[current].reveal[currentstep+1] || [], function(i,e) {
         $(e).fadeTo(500,0);
       });
+      // call newstep event handler
+      if( handler ) {
+        handler(currentstep+1); // step numbers start at 1
+      }
     } else {
       if( current > 0 ) {
         goToSlide(current-1);
@@ -449,7 +468,7 @@ var jslide = (function() {
   function init() {
     var i, j, h,
         common = $('.slidecommon').detach(),
-        handlerList = ['onleave', 'onenter'];
+        handlerList = ['onleave', 'onenter', 'onnewstep'];
 
     slides = [];
     $('div.slide').each( function(i,e) {
@@ -523,12 +542,12 @@ var jslide = (function() {
         case 39: // crsr right 
         case 40: // crsr down
         case 32: // space 
-          nextSlide(); break;
+          nextSlide(e.shiftKey); break;
         case 8 : // backspace
         case 33: // page up 
         case 37: // crsr left 
         case 38: // crsr up 
-          prevSlide(); break;
+          prevSlide(e.shiftKey); break;
         case 35: // end
           goToSlide( slides.length - 1 ); break;
         case 36: // home
