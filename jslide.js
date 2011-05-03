@@ -291,6 +291,9 @@ var jslide = (function() {
         for( j = m[1]; j <= m[2]; j++ ) {
           steps[j-1] = true;
         }
+        if( !steps[m[2]] ) {
+          steps[m[2]] = false;
+        }
         continue;
       }
 
@@ -301,6 +304,9 @@ var jslide = (function() {
           throw 'Steps start at 1';
         }
         steps[m[1]-1] = true;
+        if( !steps[m[1]] ) {
+          steps[m[1]] = false;
+        }
         continue;
       }
 
@@ -546,13 +552,6 @@ var jslide = (function() {
               e.hide[k] = [ f ];
             }
           }
-        }
-        
-        // add final hide step
-        if( e.hide[steps.length] ) {
-          e.hide[steps.length].push(f);
-        } else {
-          e.hide[steps.length] = [ f ];
         }
       });
     } );
