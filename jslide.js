@@ -137,6 +137,10 @@ var jslide = (function() {
     scaleFactor = r;
 
     // center
+    if( overview ) {
+      sx=0; sy = 0;
+      sc.css( { width: (ww/r)+'px', height: (wh/r)+'px' } );
+    }
     sc.css( { left: sx+'px', top: sy+'px' } );
   }
 
@@ -444,7 +448,7 @@ var jslide = (function() {
       }
     });
   }
-  
+
   // show/hide the time
   function toggleClock() {
     var time, d;
