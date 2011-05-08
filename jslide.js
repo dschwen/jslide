@@ -369,11 +369,33 @@ var jslide = (function() {
   }
   // connect two elements on the slide with an arrow
   function arrowFromTo( slide, from, to, color, options ) {
-    var f = $(from).offset(), t = $(to).offset(), s = $(slide).offset(), 
-        x1 = ( f.left - s.left )/scaleFactor + $(from).width()/2, 
-        x2 = ( t.left - s.left )/scaleFactor + $(to).width()/2,
-        y1 = ( f.top - s.top )/scaleFactor + $(from).height()/2,
-        y2 = ( t.top - s.top )/scaleFactor + $(to).height()/2;
+    var f = $(from).offset(), t = $(to).offset(), s = $(slide).offset(),
+        fw = $(from).width()/2, tw = $(to).width()/2,
+        fh = $(from).height()/2, th = $(to).height()/2,
+        x1 = ( f.left - s.left )/scaleFactor + fw,
+        x2 = ( t.left - s.left )/scaleFactor + tw,
+        y1 = ( f.top - s.top )/scaleFactor + fh,
+        y2 = ( t.top - s.top )/scaleFactor + th;
+    // choose top left bottom right attachment point
+    if( Math.abs(x1-x2) > Math.abs(y1-y2) ) {
+      // horizontal
+      if( x1 > x2 ) {
+        x1 -= fw;
+        x2 += tw;
+      } else {
+        x1 += fw;
+        x2 -= tw;
+      }
+    } else {
+      // vertical
+      if( y1 > y2 ) {
+        y1 -= fh;
+        y2 += th;
+      } else {
+        y1 += fh;
+        y2 -= th;
+      }
+    }
     arrow(slide,x1,y1,x2,y2,options);
   }
   // draw an ellipse around an element on the slide
@@ -619,12 +641,9 @@ var jslide = (function() {
 
     // enhance all video elements
     $('video').toggle( function(){ this.play() }, function(){ this.pause() } );
-    
+
     // build all plots
     buildPlots();
-    
-    // apply step-by-step revieal info
-    // TODO
   }
 
   return {
