@@ -332,36 +332,49 @@ var jslide = (function() {
   }
 
   // add svg overlay to current slide
-  function addOverlay( slide, callback ) {
-    var o = $('<div></div>').addClass('svgOverlay');
+  function addOverlay( slide, x, y, w, h, callback ) {
+    var o = $('<div></div>')
+      .addClass('svgOverlay')
+      .css({
+        width: w,
+           height: h,
+           left: x,
+           top: y
+      });
     $(slide).append(o);
     function initOverlay(svg) {
       var d,m,i;
-      d = svg.defs('myDefs');
-      for( var i=0; i<acolor.length; i++ ) {
-        m = svg.marker(d,acolor[i]+'Arrow',3,2,4,4,'auto'); 
-        svg.polyline(m,[[0,0], [4,2],[0,4],[1,2]], { fill: acolor[i] } );
-      }
       callback(svg);
     }
     o.svg( { onLoad: initOverlay } );
   }
-  // get svg handler for slide
-  function getOverlay( slide ) {
-    return $(slide).find('.svgOverlay').svg('get');
-  }
   // draw an arrow
-  function arrow(svg,x1,y1,x2,y2, options) {
-    svg.line( x1, y1, x2, y2, $.extend( { strokeWidth: 5, opacity: 0.75 }, options ) );
+  function arrow( slide, x1,y1,x2,y2, color, options ) {
+    var gutter = 10,
+        x = Math.min(x1,x2)-gutter, y = Math.min(y1,y2)-gutter,
+        w = Math.abs(x1-x2)+2*gutter, h = Math.abs(y1-y2)+2*gutter;
+    color = color || 'red';
+    function callback(svg) {
+      d = svg.defs('myDefs');
+      m = svg.marker(d, 'arrow',3,2,4,4,'auto');
+      svg.polyline(m, [[0,0], [4,2],[0,4],[1,2]], { fill: color } );
+      svg.line( x1-x, y1-y, x2-x, y2-y, $.extend( {
+        markerEnd: 'url(#arrow)',
+        strokeWidth: 5,
+        opacity: 0.75,
+        stroke: color
+      }, options ) );
+    }
+    addOverlay( slide, x,y,w,h, callback );
   }
   // connect two elements on the slide with an arrow
-  function arrowFromTo( slide, from, to, options ) {
+  function arrowFromTo( slide, from, to, color, options ) {
     var f = $(from).offset(), t = $(to).offset(), s = $(slide).offset(), 
         x1 = ( f.left - s.left )/scaleFactor + $(from).width()/2, 
         x2 = ( t.left - s.left )/scaleFactor + $(to).width()/2,
         y1 = ( f.top - s.top )/scaleFactor + $(from).height()/2,
         y2 = ( t.top - s.top )/scaleFactor + $(to).height()/2;
-    arrow(getOverlay(slide),x1,y1,x2,y2,options);
+    arrow(slide,x1,y1,x2,y2,options);
   }
   // draw an ellipse around an element on the slide
   function ellipseAround( slide, to, options ) {
@@ -370,7 +383,7 @@ var jslide = (function() {
         x  = ( t.left - s.left )/scaleFactor  + rx,
         ry = $(to).height()/2,
         y  = ( t.top - s.top )/scaleFactor + ry;
-    getOverlay(slide).ellipse(x,y,rx*1.4,ry*1.4,$.extend( { strokeWidth: 5, stroke: 'blue', fill: 'none', opacity: 0.75 }, options ) );
+    //getOverlay(slide).ellipse(x,y,rx*1.4,ry*1.4,$.extend( { strokeWidth: 5, stroke: 'blue', fill: 'none', opacity: 0.75 }, options ) );
   }
 
   // react on hashchange events
@@ -604,11 +617,6 @@ var jslide = (function() {
       }
     } );
 
-    // polulate arrow style list
-    for( var i=0; i<acolor.length; i++ ) {
-      astyle[acolor[i]] = { markerEnd: 'url(#'+acolor[i]+'Arrow)', strokeWidth: 5, stroke: acolor[i] };
-    }
-
     // enhance all video elements
     $('video').toggle( function(){ this.play() }, function(){ this.pause() } );
     
@@ -626,11 +634,9 @@ var jslide = (function() {
     freeze    : function() { frozen = true; },
     unfreeze  : function() { frozen = false; },
     addOverlay   : addOverlay,
-    getOverlay   : getOverlay,
     arrow        : arrow,
     arrowFromTo  : arrowFromTo,
-    ellipseAround: ellipseAround,
-    astyle : astyle,
+    //ellipseAround: ellipseAround,
     getStatus : function() { return [ current, slides, spotLight ]; },
     progressSpinner : progressSpinner
   };
