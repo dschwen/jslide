@@ -6,6 +6,7 @@ var jslide = (function() {
       astyle = [],      // available arrow colors
       slides, spotLight, maxSize = { w:0, h:0 },
       overview = false,
+      useGPU = false,
       clockHandler = null, clockDiv = null;
 
   function buildSpotLight(r) {
@@ -131,9 +132,9 @@ var jslide = (function() {
         r = Math.min(ww/ew,wh/eh)/(overview?4:1),
         sx = Math.round( overview ? 0 : (ww-ew*r)/2 ),
         sy = Math.round( overview ? 0 : (wh-eh*r)/2 );
-
+    
     // scale
-    $.each(['webkit','moz','o'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
+    $.each(['webkit','moz','o','ms'], function(i,p) { sc.css('-'+p+'-transform','scale('+r+', '+r+')'); } );
     scaleFactor = r;
 
     // center
@@ -635,6 +636,14 @@ var jslide = (function() {
           break;
         case 67: // c
           toggleClock();
+          break;
+        case 71: // G
+          if( e.shiftKey ) {
+            useGPU = !useGPU;
+            $.each(['webkit','moz','o','ms'], function(i,p) { 
+              $('div.slide').css('-'+p+'-transform', useGPU ? 'translateZ(0)' : ''); 
+            } );
+          }
           break;
       }
     } );
