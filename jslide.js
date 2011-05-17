@@ -221,6 +221,8 @@ var jslide = (function() {
     } else {
       if( current < slides.length-1 ) {
         goToSlide(current+1);
+      } else {
+        currentstep = 0;
       }
     }
   }
@@ -246,6 +248,8 @@ var jslide = (function() {
     } else {
       if( current > 0 ) {
         goToSlide(current-1);
+      } else {
+        currentstep = 0;
       }
     }
   }
