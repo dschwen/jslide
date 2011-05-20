@@ -7,7 +7,8 @@ var jslide = (function() {
       slides, spotLight, maxSize = { w:0, h:0 },
       overview = false,
       useGPU = false,
-      clockHandler = null, clockDiv = null;
+      clockHandler = null, clockDiv = null,
+      lastTime = null;
 
   function buildSpotLight(r) {
     var canvas, c, grad, im,
@@ -148,7 +149,7 @@ var jslide = (function() {
   // go to slide
   // global: current
   function goToSlide(n) {
-    var handler, ci, classList = [ 'FarPrev', 'Prev', 'Current', 'Next', 'FarNext' ];
+    var handler, ci, classList = [ 'FarPrev', 'Prev', 'Current', 'Next', 'FarNext' ], now = new Date();
     // leaving a slide or entering the presentation?
     if( !overview && current !== null ) {
       // fire onleave handler for current slide (may prevent leaving)
@@ -156,7 +157,10 @@ var jslide = (function() {
       if( handler && handler() === false ) {
         return;
       }
+      // increment residence time on that slide
+      slides[current].time += ( now.getTime() - lastTime );
     }
+    lastTime = now.getTime();
     current = n;
     currentstep = 0;
 
@@ -540,6 +544,38 @@ var jslide = (function() {
       }
     }
   }
+  
+  // time the talk
+  function reportTiming() {
+    var total = 0, now = new Date();
+    function formatTime(t) {
+      var s = '', d;
+      t /= 1000.0;
+      if( t > 60*60 ) {
+        d = Math.floor()/(60*60);
+        s += d + 'h ';
+        t -= d*60*60
+      }
+      if( t > 60 ) {
+        d = Math.floor()/60;
+        s += d + 'm ';
+        t -= d*60
+      }
+      if( t > 0 ) {
+        s += Math.round(t*100)/100.0 + 's ';
+      }
+      return s;
+    }
+    slides[current].time += ( now.getTime() - lastTime );
+    lastTime = now.getTime();
+    $.each( slides, function(i,e) { 
+      if( e.time > 0 ) {
+        console.log( e.title + ' ' + formatTime(e.time) );
+      }
+      total += e.time;
+    } );
+    console.log( 'Total: ' + formatTime(total) );
+  }
 
   // initialization
   // global: slides, spotLight;
@@ -555,6 +591,8 @@ var jslide = (function() {
       // build list of slides, remember orignal classes
       slides[i] = {
         div: e,
+        title: $(e).children('h1').eq(0).text() || "untitled",
+        time: 0,
         origClass: $(e).attr('class'),
         hide:   new Array(steps),
         reveal: new Array(steps)
@@ -637,6 +675,11 @@ var jslide = (function() {
           break;
         case 80: // p
           buildPlots();
+          break;
+        case 84: // t
+          if( e.shiftKey ) {
+            reportTiming();
+          }
           break;
         case 67: // c
           toggleClock();
