@@ -577,6 +577,15 @@ var jslide = (function() {
     console.log( 'Total: ' + formatTime(total) );
   }
 
+  // reset timing data
+  function clearTiming() {
+    var now = new Date();
+    lastTime = now.getTime();
+    $.each( slides, function(i,e) { 
+      e.time = 0;
+    } );
+  }
+  
   // initialization
   // global: slides, spotLight;
   function init() {
@@ -679,6 +688,11 @@ var jslide = (function() {
         case 84: // t
           if( e.shiftKey ) {
             reportTiming();
+          }
+          break;
+        case 90: // z
+          if( e.shiftKey ) {
+            clearTiming();
           }
           break;
         case 67: // c
