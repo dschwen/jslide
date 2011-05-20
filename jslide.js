@@ -552,12 +552,12 @@ var jslide = (function() {
       var s = '', d;
       t /= 1000.0;
       if( t > 60*60 ) {
-        d = Math.floor()/(60*60);
+        d = Math.floor(t/(60*60));
         s += d + 'h ';
         t -= d*60*60
       }
       if( t > 60 ) {
-        d = Math.floor()/60;
+        d = Math.floor(t/60);
         s += d + 'm ';
         t -= d*60
       }
