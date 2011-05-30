@@ -1,3 +1,8 @@
+/***************************************************
+ * jSlide - JavaScript slide presentation framework
+ * (c) 2011 by Daniel Schwen
+ ***************************************************/
+
 /* theme independent styling */
 div.slides {
   position: fixed;

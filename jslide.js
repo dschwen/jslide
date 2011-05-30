@@ -1,3 +1,8 @@
+/***************************************************
+ * jSlide - JavaScript slide presentation framework
+ * (c) 2011 by Daniel Schwen
+ ***************************************************/
+
 var jslide = (function() {
   var scaleFactor, // scale factor
       current = null,     // current slide number
