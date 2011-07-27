@@ -715,8 +715,11 @@ var jslide = (function() {
     } );
 
     // enhance all video elements
-    $('video').toggle( function(){ this.play() }, function(){ this.pause() } );
-
+    $('video')
+      .toggle( function(){ this.play() }, function(){ this.pause() } )
+      .mouseenter( function(){ this.setAttribute("controls","controls"); } )
+      .mouseleave( function(){ this.removeAttribute("controls"); } );
+ 
     // build all plots
     buildPlots();
   }
