@@ -662,6 +662,9 @@ var jslide = (function() {
     // react on window resizes
     $(window).resize(scale);
     scale();
+    
+    //backjump
+    var backjump = 0, goingforward = true;
 
     // add event handlers
     var frozen = false;
@@ -671,12 +674,17 @@ var jslide = (function() {
         case 34: // page down 
         case 39: // crsr right 
         case 40: // crsr down
-        case 32: // space 
+        case 32: // space
+          goingforward = true;
           nextSlide(e.shiftKey); break;
         case 8 : // backspace
         case 33: // page up 
         case 37: // crsr left 
         case 38: // crsr up 
+          if( goingforward ) {
+            goingforward = false;
+            backjump = current;
+          }
           prevSlide(e.shiftKey); break;
         case 35: // end
           goToSlide( slides.length - 1 ); break;
@@ -699,6 +707,9 @@ var jslide = (function() {
           if( e.shiftKey ) {
             clearTiming();
           }
+          break;
+        case 66: // b
+          goToSlide(backjump);
           break;
         case 67: // c
           toggleClock();
