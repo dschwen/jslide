@@ -1,0 +1,103 @@
+/***************************************************
+ * jSlide - JavaScript slide presentation framework
+ * (c) 2011 by Daniel Schwen
+ ***************************************************/
+
+/* default slide theme (spit into seperate file to allow for multiple themes) */
+body {
+  overflow: scroll;
+}
+div.slides {
+  position: relative;
+}
+div.slide {
+  position: relative;
+  clear: both;
+  background-color: white;
+  border: 1px solid black;
+  margin: 1em;
+  page-break-after: always;
+}
+img.logo {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0.25;
+  width: 50px;
+}
+
+/* fonts */
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans'), local('DroidSans'), url('../fonts/DroidSans.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT Serif'), local('PTSerif-Regular'), url('../fonts/ptserif.ttf') format('truetype');
+}
+        
+        
+body {
+  font-family: 'PT Serif'; 
+  font-size: 24px; 
+}
+
+/* headings (first h1 heading goes to the top of the slide) */
+h1, h2, h3, h4 { font-family: 'Droid Sans' }
+h1 { font-size: 36px }
+h2 { font-size: 32px }
+h3 { margin-top: 10px }
+
+div.slide > h1:first-of-type {
+  color: white;
+  /*text-shadow: 3px 3px 5px rgb(128,75,0);*/
+}
+ul, ol {
+  text-align: left;
+}
+
+div.title > h1:first-of-type {
+  font-size: 48px;
+  position: static;
+  margin-top: 200px;
+  margin-bottom: 20px;
+  text-shadow: none;
+  color: black;
+}
+div.title {
+  text-align: center;
+}
+div.title > p {
+  line-height: 32px;
+  -webkit-margin-before: 0.2em;
+  -webkit-margin-after: 0.2em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+}
+
+/* this add-on class seems to crash google chrome */
+div.twocol {
+  -webkit-column-count: 2;
+  -webkit-column-rule: 1px solid #bbb;
+  -webkit-column-gap: 2em;
+  -moz-column-count: 2;
+  -moz-column-rule: 1px solid #bbb;
+  -moz-column-gap: 2em;
+  column-count: 2;
+  column-rule: 1px solid #bbb;
+  column-gap: 2em;
+}
+hr {
+  color: #333;
+  background-color: #333;
+  height: 1px;
+  border: 0;
+  width: 90%;
+}
+figcaption {
+  font-size: 70%;
+}
