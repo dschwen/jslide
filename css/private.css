@@ -1,0 +1,155 @@
+/***************************************************
+ * jSlide - JavaScript slide presentation framework
+ * (c) 2011 by Daniel Schwen
+ ***************************************************/
+
+/* default slide theme (spit into seperate file to allow for multiple themes) */
+div.slides {
+  /*-webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;*/
+}
+div.slide {
+  /*border-radius: 10px;
+  -moz-border-radius: 10px;*/
+  background-color: white;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+
+  /*
+  background: url(uiuc_top.png) repeat-x top left, url('uiuc_bottom.png') repeat-x bottom left,
+    -webkit-gradient(radial, center center, 0, center center, 800, from(rgb(255,255,255)), to(rgb(205,205,255)));
+  background: -webkit-gradient( linear, left top, left bottom,
+      color-stop(0.07, rgb(255,150,0)),
+      color-stop(0.07, rgba(0,0,0,0.2)),
+      color-stop(0.10, rgba(0,0,0,0)),
+      color-stop(0.99, rgba(0,0,0,0)),
+      color-stop(0.99, rgb(255,150,0)) ),
+    -webkit-gradient(radial, center center, 0, center center, 800, from(rgb(255,255,255)), to(rgb(205,205,255)));
+
+  background-image: -moz-linear-gradient( top,
+      rgb(255,150,0) 7%,
+      rgba(0,0,0,0.2) 7%,
+      rgba(0,0,0,0) 10%,
+      rgba(0,0,0,0) 98.75%,
+      rgb(255,150,0) 98.75%
+    ),
+    -moz-radial-gradient( center, farthest-corner, rgb(255,255,255), rgb(205,205,255) );
+  */
+}
+img.logo {
+  position: absolute;
+  top: -78px;
+  left: -32px;
+}
+
+.slidecommon {
+  position: absolute; 
+  bottom: 10px; 
+  right: 10px; 
+  font-size: 12px;
+  font-family: "Inconsolata";
+  font-weight: bold;
+}
+
+/* fonts */
+@font-face {
+  font-family: 'Inconsolata';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Inconsolata'), url('../fonts/Inconsolata.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Droid Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans'), local('DroidSans'), url('../fonts/DroidSans.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'PT Serif';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT Serif'), local('PTSerif-Regular'), url('../fonts/ptserif.ttf') format('truetype');
+}
+        
+        
+body {
+  background-color: gray;
+  /*background-image: url('uiuc_bg.png');
+  background: -webkit-gradient( linear, left top, left bottom,
+      color-stop(0.0, rgba(200,200,200,0.6)), color-stop(0.5, rgba(255,255,255,0)), color-stop(0.5, rgba(0,0,0,0)), color-stop(1.0, rgba(0,0,0,0.5)) ), 
+    url('uiuc_bg.png');*/
+  background: -webkit-gradient( linear, left top, left bottom,
+      color-stop(0.0, rgba(200,200,200,0.6)), color-stop(0.5, rgba(255,255,255,0)), color-stop(0.5, rgba(0,0,0,0)), color-stop(1.0, rgba(0,0,0,0.5)) );
+  font-family: 'Droid Sans'; 
+  font-size: 24px; 
+}
+
+/* headings (first h1 heading goes to the top of the slide) */
+h1, h2, h3, h4 { font-family: 'Droid Sans' }
+h1 { font-size: 36px }
+h2 { font-size: 32px }
+h3 { margin-top: 10px }
+
+div.slide > h1:first-of-type {
+  /*color: white;*/
+  text-shadow: 5px 5px 15px rgba(0,0,0,0.25);
+}
+ul, ol {
+  text-align: left;
+}
+
+div.title > h1:first-of-type {
+  font-size: 48px;
+  position: static;
+  margin-top: 200px;
+  margin-bottom: 20px;
+  text-shadow: none;
+  color: black;
+}
+div.title {
+  text-align: center;
+  /*background-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    color-stop(0.0, rgb(255,255,255)),
+    color-stop(0.99, rgb(205,205,255)),
+    color-stop(0.99, rgb(255,150,0))
+  );
+  background-image: -moz-linear-gradient(
+    top,
+    rgb(255,255,255) 0%,
+    rgb(205,205,255) 98.75%,
+    rgb(255,150,0) 98.75%
+  );*/
+}
+div.title > p {
+  line-height: 32px;
+  -webkit-margin-before: 0.2em;
+  -webkit-margin-after: 0.2em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+}
+
+/* this add-on class seems to crash google chrome */
+div.twocol {
+  -webkit-column-count: 2;
+  -webkit-column-rule: 1px solid #bbb;
+  -webkit-column-gap: 2em;
+  -moz-column-count: 2;
+  -moz-column-rule: 1px solid #bbb;
+  -moz-column-gap: 2em;
+  column-count: 2;
+  column-rule: 1px solid #bbb;
+  column-gap: 2em;
+}
+hr {
+  color: #333;
+  background-color: #333;
+  height: 1px;
+  border: 0;
+  width: 90%;
+}
+figcaption {
+  font-size: 70%;
+}
