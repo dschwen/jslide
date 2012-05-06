@@ -27,6 +27,7 @@ div.slide {
   -moz-transform: translateZ(0);
   -o-transform: translateZ(0);
   transform: translateZ(0);*/
+  overflow: hidden;
 }
 div.slideCurrent {
   left: 0px;
