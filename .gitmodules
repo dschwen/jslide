@@ -1,0 +1,3 @@
+[submodule "lib/jsplumb"]
+	path = lib/jsplumb
+	url = https://github.com/sporritt/jsPlumb.git
