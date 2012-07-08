@@ -1,0 +1,80 @@
+div.conH {
+  position: absolute;
+  width: 100%; height: 50%;
+  bottom: 0; right: 0;
+  border-top: 2px solid black;
+  margin-bottom: -1px;
+}
+div.conV {
+  position: absolute;
+  width: 50%; height: 100%;
+  bottom: 0; right: 0;
+  border-left: 2px solid black;
+  margin-right: -1px;
+}
+
+div.conTL, div.conTR, div.conBL, div.conBR {
+  position: absolute;
+  width: 50%; height: 50%;
+}
+div.conTL {
+  bottom: 0; right: 0;
+  border-top-left-radius: 50%;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+div.conTR {
+  bottom: 0; left: 0;
+  border-top-right-radius: 50%;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  margin-bottom: -1px;
+  margin-left: -1px;
+}
+div.conBL {
+  top: 0; right: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  margin-top: -1px;
+  margin-right: -1px;
+}
+div.conBR {
+  top: 0; left: 0;
+  border-bottom-right-radius: 50%;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+  margin-top: -1px;
+  margin-left: -1px;
+}
+div.boxRed, div.boxGreen, div.boxYellow, div.boxBlue {
+  width: 100%; height: 100%;
+  padding: 5px;
+}
+div.boxRed {
+  border: 1px solid #cc0000;
+  background-color: #eeaaaa;
+}
+div.boxGreen {
+  border: 1px solid #00cc00;
+  background-color: #aaeeaa;
+}
+div.boxYellow {
+  border: 1px solid #cccc00;
+  background-color: #eeeeaa;
+}
+div.boxBlue {
+  border: 1px solid #0000cc;
+  background-color: #aaaaee;
+}
+table.flowchart>tbody>tr>td {
+  position: relative;
+  border: none;
+  min-width: 40px;
+  min-height: 40px; 
+}
+table.flowchart {
+  border-collapse:collapse;
+}
