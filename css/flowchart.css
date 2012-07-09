@@ -1,0 +1,145 @@
+div.conTL, div.conTR, div.conBL, div.conBR, div.conH, div.conV, div.conHR, div.conHL, div.conVB, div.conVT {
+  position: absolute;
+  width: 50%; height: 50%;
+  z-index: -1;
+}
+div.conH {
+  width: 100%; height: 50%;
+  bottom: 0; right: 0;
+  border-top: 2px solid black;
+  margin-bottom: -1px;
+  text-align: center;
+}
+div.conHR {
+  bottom: 0; right: 0;
+  border-top: 2px solid black;
+  margin-bottom: -1px;
+}
+div.conHL {
+  bottom: 0; left: 0;
+  border-top: 2px solid black;
+  margin-bottom: -1px;
+}
+div.conV {
+  width: 50%; height: 100%;
+  bottom: 0; right: 0;
+  border-left: 2px solid black;
+  margin-right: -1px;
+}
+div.conVB {
+  bottom: 0; right: 0;
+  border-left: 2px solid black;
+  margin-right: -1px;
+}
+div.conVT {
+  top: 0; right: 0;
+  border-left: 2px solid black;
+  margin-right: -1px;
+}
+
+div.conBR {
+  bottom: 0; right: 0;
+  border-top-left-radius: 50%;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+div.conBL {
+  bottom: 0; left: 0;
+  border-top-right-radius: 50%;
+  border-top: 2px solid black;
+  border-right: 2px solid black;
+  margin-bottom: -1px;
+  margin-left: -1px;
+}
+div.conTR {
+  top: 0; right: 0;
+  border-bottom-left-radius: 50%;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  margin-top: -1px;
+  margin-right: -1px;
+}
+div.conTL {
+  top: 0; left: 0;
+  border-bottom-right-radius: 50%;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+  margin-top: -1px;
+  margin-left: -1px;
+}
+div.boxRed, div.boxGreen, div.boxYellow, div.boxBlue, div.boxData {
+  width: auto; height: 100%;
+  text-align: center;
+  padding: 5px;
+  margin: -1px;
+}
+div.boxRed {
+  border: 1px solid #cc0000;
+  background-color: #eeaaaa;
+}
+div.boxGreen {
+  border: 1px solid #00cc00;
+  background-color: #aaeeaa;
+}
+div.boxYellow {
+  border: 1px solid #cccc00;
+  background-color: #eeeeaa;
+}
+div.boxBlue {
+  border: 1px solid #0000cc;
+  background-color: #aaaaee;
+}
+div.boxData {
+  border: 1px solid black;
+  border-radius: 100%;
+  background-color: white;
+}
+div.boxHalf {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+div.arrR, div.arrB, div.arrL, div.arrT {
+  position: absolute;
+  width: 2px; height: 2px;
+  border: 6px solid;
+}
+div.arrT {
+  margin-top: -7px;
+  margin-right: -7px;
+  top: 0;
+  right: 50%;
+  border-color: transparent transparent black transparent;
+}
+div.arrB {
+  margin-bottom: -7px;
+  margin-right: -7px;
+  bottom: 0;
+  right: 50%;
+  border-color: black transparent transparent transparent;
+}
+div.arrR {
+  margin-top: -6px;
+  margin-right: -7px;
+  top: 50%;
+  right: 0;
+  border-color: transparent transparent transparent black;
+}
+div.arrL {
+  margin-top: -6px;
+  margin-left: -7px;
+  top: 50%;
+  left: 0;
+  border-color: transparent black transparent transparent;
+}
+table.flowchart>tbody>tr>td {
+  position: relative;
+  border: none;
+  min-width: 40px;
+  min-height: 40px; 
+}
+table.flowchart {
+  border-collapse:collapse;
+}
