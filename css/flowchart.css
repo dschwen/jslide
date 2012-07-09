@@ -39,7 +39,7 @@ div.conVT {
 
 div.conBR {
   bottom: 0; right: 0;
-  border-top-left-radius: 50%;
+  border-top-left-radius: 1000px;
   border-top: 2px solid black;
   border-left: 2px solid black;
   margin-bottom: -1px;
@@ -47,7 +47,7 @@ div.conBR {
 }
 div.conBL {
   bottom: 0; left: 0;
-  border-top-right-radius: 50%;
+  border-top-right-radius: 1000px;
   border-top: 2px solid black;
   border-right: 2px solid black;
   margin-bottom: -1px;
@@ -55,7 +55,7 @@ div.conBL {
 }
 div.conTR {
   top: 0; right: 0;
-  border-bottom-left-radius: 50%;
+  border-bottom-left-radius: 1000px;
   border-bottom: 2px solid black;
   border-left: 2px solid black;
   margin-top: -1px;
@@ -63,7 +63,7 @@ div.conTR {
 }
 div.conTL {
   top: 0; left: 0;
-  border-bottom-right-radius: 50%;
+  border-bottom-right-radius: 1000px;
   border-bottom: 2px solid black;
   border-right: 2px solid black;
   margin-top: -1px;
