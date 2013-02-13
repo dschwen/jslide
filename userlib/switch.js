@@ -64,14 +64,42 @@ Ball.exchange = function(b1,b2, callback) {
   var c = -1.0;
   function animate() {
     if( c<1 ) {
-      b1.move( cx1+Math.sin(phi1*c+theta)*r1, cy1+Math.cos(phi1*c+theta)*r1 );
-      b2.move( cx2+Math.sin(phi2*c+Math.PI+theta)*r2, cy2+Math.cos(phi2*c+Math.PI+theta)*r2 );
-      c += 0.05;
-      setTimeout(animate, 1000/60 ); 
+      var d = Math.atan(c*1.5574077246549);
+      b1.move( cx1+Math.sin(phi1*d+theta)*r1, cy1+Math.cos(phi1*d+theta)*r1 );
+      b2.move( cx2+Math.sin(phi2*d+Math.PI+theta)*r2, cy2+Math.cos(phi2*d+Math.PI+theta)*r2 );
+      c += 0.1;
+      requestAnimFrame(animate); 
     } else {
       b1.move( fx1, fy1 );
       b2.move( fx2, fy2 );
+      if( callback ) callback();
     }
   }
   animate();
 }
+
+Ball.shakePair = function(b1,b2, callback) {
+  var dx = b2.x - b1.x
+    , dy = b2.y - b1.y
+    , l = Math.sqrt(dx*dx+dy*dy);
+  dx /= l; dy /= l;
+
+  // exact final positions
+  var fx1 = b1.x, fy1 = b1.y
+    , fx2 = b2.x, fy2 = b2.y
+    , c = 10*Math.PI;
+  function animate() {
+    if( c>0 ) {
+      b1.move( fx1 + dy*Math.sin(c)*b1.r/2, fy1 - dx*Math.sin(c)*b1.r/2 );
+      b2.move( fx2 - dy*Math.sin(c)*b2.r/2, fy2 + dx*Math.sin(c)*b2.r/2 );
+      c -= 0.8;
+      requestAnimFrame(animate);
+    } else {
+      b1.move( fx1, fy1 );
+      b2.move( fx2, fy2 );
+      if( callback ) callback();
+    }
+  }
+  animate();
+}
+
