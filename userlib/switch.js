@@ -72,9 +72,11 @@ Ball.exchange = function(b1,b2, callback) {
     } else {
       b1.move( fx1, fy1 );
       b2.move( fx2, fy2 );
+      (b1.div.add(b2.div)).css('z-index','');
       if( callback ) callback();
     }
   }
+  (b1.div.add(b2.div)).css('z-index','10');
   animate();
 }
 
@@ -87,7 +89,7 @@ Ball.shakePair = function(b1,b2, callback) {
   // exact final positions
   var fx1 = b1.x, fy1 = b1.y
     , fx2 = b2.x, fy2 = b2.y
-    , c = 10*Math.PI;
+    , c = 6*Math.PI;
   function animate() {
     if( c>0 ) {
       b1.move( fx1 + dy*Math.sin(c)*b1.r/2, fy1 - dx*Math.sin(c)*b1.r/2 );
