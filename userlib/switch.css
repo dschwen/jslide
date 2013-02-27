@@ -1,0 +1,15 @@
+div.Ball { 
+  border-radius: 100%;
+  position: absolute;
+  border: 1px solid black;
+  background-color: gray;
+  box-shadow: inset -3px -3px 5px 5px rgba(0,0,0,0.25), inset 3px 3px 3px 3px rgba(255,255,255,0.5);
+}
+div.BallBox {
+  position: relative;
+  border: 1px solid black;
+  background-color: #868;
+  width: 461px;
+  height: 461px;
+  border-radius: 11px;
+}
